@@ -1,0 +1,12 @@
+{
+  "source_sha256": {
+    "arr_study/confirmation_v1/comparison.json": "fc3240fa00c9a2aaca8ec00668266ab16d6e830f525871c8f968773d155697c3",
+    "arr_study/confirmation_v1/protocol.json": "eded2338e567819bf6fb660abecd21fa1bffe94a41a77169e128d579b1945479",
+    "arr_study/extension_confirmation_v1/comparison.json": "b6f3f3a81e586da26eeaa0823365af5bc893878284008781e8df2be88e04a175",
+    "arr_study/quota_replication_v1/comparison.json": "84af2ee82af6a1731620ae6fa1b67e71998aff6cbae3c4fb596d178ad23184b3",
+    "arr_study/quota_replication_v1/protocol_s20261012_random_answer.json": "f9e395905643801df78ef2ce1094fa949b9db600b3a09fad465dc562ec5ee77a",
+    "arr_study/supervision_review_v1/audit.json": "f8498957e672fe7a129ef4ff6d4cdb7051535c2e021ebd5df0d0f536393645a6"
+  },
+  "export_date": "2026-10-08",
+  "scope": "Reduced reporting data; original file hashes refer to the retained project archive. Full training artifacts, raw trajectories, model weights and question texts are not included."
+}

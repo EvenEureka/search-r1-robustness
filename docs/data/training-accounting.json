@@ -1,0 +1,893 @@
+{
+  "20261012/paired_answer": {
+    "arm": "paired_answer",
+    "seed": 20261012,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 252527,
+        "trajectories": 4352,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 108,
+        "retrieved_trajectories": 3697,
+        "shared_groups": 150,
+        "steps": 68
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3668903,
+        "rl_sequence_padded_tokens": 10235968,
+        "rl_loss_tokens": 1002320,
+        "backend_generated_tokens": 1012764,
+        "backend_requested_input_tokens": 6620960,
+        "backend_calls": 11196,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 106827,
+        "aux_sequence_padded_tokens": 113636,
+        "aux_loss_tokens": 253
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 82,
+        "gold_checked_clean_answer": 54,
+        "examples": 68,
+        "answer_tokens": 253,
+        "training_gold_with_support_title_coverage": 14
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 68,
+      "loop_seconds": 2714.451907608658,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 14.451907608658075,
+      "overshoot_fraction": 0.005352558373576954,
+      "last_batch_seconds": 33.73658206406981,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3343.6007134178653,
+      "audit_seconds": 25.512921646237373,
+      "evaluation_seconds": 64.3174276901409,
+      "elapsed_seconds": 3433.4450278282166,
+      "allocated_gpu_hours_through_evaluation": 3.8149389198091295,
+      "training_allocated_gpu_hours": 3.715111903797628
+    }
+  },
+  "20261012/clean": {
+    "arm": "clean",
+    "seed": 20261012,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 237731,
+        "trajectories": 4992,
+        "shared_trajectories": 0,
+        "actual_exposed": 0,
+        "exposed_with_nonzero_advantage": 0,
+        "retrieved_trajectories": 4321,
+        "shared_groups": 0,
+        "steps": 78
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3761824,
+        "rl_sequence_padded_tokens": 10801024,
+        "rl_loss_tokens": 854744,
+        "backend_generated_tokens": 852732,
+        "backend_requested_input_tokens": 6876330,
+        "backend_calls": 13129
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 78,
+      "loop_seconds": 2719.168388230726,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 19.168388230726123,
+      "overshoot_fraction": 0.007099403048417052,
+      "last_batch_seconds": 25.682668573223054,
+      "actual_exposed": 0,
+      "target_exposed": 0,
+      "exposure_templates": {},
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "clean",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3346.1614286573604,
+      "audit_seconds": 24.076764695346355,
+      "evaluation_seconds": 52.93807957135141,
+      "elapsed_seconds": 3423.1988999843597,
+      "allocated_gpu_hours_through_evaluation": 3.8035543333159554,
+      "training_allocated_gpu_hours": 3.717957142952623
+    }
+  },
+  "20261012/paired": {
+    "arm": "paired",
+    "seed": 20261012,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 246678,
+        "trajectories": 4992,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 92,
+        "retrieved_trajectories": 4468,
+        "shared_groups": 150,
+        "steps": 78
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3831624,
+        "rl_sequence_padded_tokens": 10175296,
+        "rl_loss_tokens": 836930,
+        "backend_generated_tokens": 848133,
+        "backend_requested_input_tokens": 6739735,
+        "backend_calls": 12429
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 78,
+      "loop_seconds": 2724.6154512800276,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 24.615451280027628,
+      "overshoot_fraction": 0.009116833807417679,
+      "last_batch_seconds": 26.567073594778776,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_role": 150,
+        "train_direct": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3414.526720385067,
+      "audit_seconds": 22.943808436393738,
+      "evaluation_seconds": 48.4610189339146,
+      "elapsed_seconds": 3485.9448568820953,
+      "allocated_gpu_hours_through_evaluation": 3.8732720632023283,
+      "training_allocated_gpu_hours": 3.79391857820563
+    }
+  },
+  "20261012/random_matched": {
+    "arm": "random_matched",
+    "seed": 20261012,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 283649,
+        "trajectories": 4864,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 114,
+        "retrieved_trajectories": 4316,
+        "shared_groups": 0,
+        "steps": 76
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3809170,
+        "rl_sequence_padded_tokens": 10273664,
+        "rl_loss_tokens": 937629,
+        "backend_generated_tokens": 935697,
+        "backend_requested_input_tokens": 7028368,
+        "backend_calls": 13076
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 76,
+      "loop_seconds": 2723.7498461157084,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 23.74984611570835,
+      "overshoot_fraction": 0.00879623930211415,
+      "last_batch_seconds": 27.005504108034074,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_matched",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3304.0648774337023,
+      "audit_seconds": 21.311844415962696,
+      "evaluation_seconds": 49.26294994354248,
+      "elapsed_seconds": 3374.6536977291107,
+      "allocated_gpu_hours_through_evaluation": 3.749615219699012,
+      "training_allocated_gpu_hours": 3.671183197148558
+    }
+  },
+  "20261012/random_answer": {
+    "arm": "random_answer",
+    "seed": 20261012,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 342671,
+        "trajectories": 4032,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 106,
+        "retrieved_trajectories": 3219,
+        "shared_groups": 0,
+        "steps": 63
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3654667,
+        "rl_sequence_padded_tokens": 10470784,
+        "rl_loss_tokens": 1243016,
+        "backend_generated_tokens": 1241904,
+        "backend_requested_input_tokens": 7080808,
+        "backend_calls": 11683,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 107259,
+        "aux_sequence_padded_tokens": 113216,
+        "aux_loss_tokens": 262
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 76,
+        "gold_checked_clean_answer": 41,
+        "examples": 74,
+        "answer_tokens": 262,
+        "training_gold_with_support_title_coverage": 33
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 63,
+      "loop_seconds": 2725.248705212958,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 25.248705212958157,
+      "overshoot_fraction": 0.009351372301095617,
+      "last_batch_seconds": 45.57455317955464,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_role": 150,
+        "train_direct": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3563.6339429002255,
+      "audit_seconds": 21.048595015890896,
+      "evaluation_seconds": 52.58237045072019,
+      "elapsed_seconds": 3637.2787568569183,
+      "allocated_gpu_hours_through_evaluation": 4.0414208409521315,
+      "training_allocated_gpu_hours": 3.9595932698891394
+    }
+  },
+  "20261013/random_matched": {
+    "arm": "random_matched",
+    "seed": 20261013,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 271745,
+        "trajectories": 4544,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 94,
+        "retrieved_trajectories": 3948,
+        "shared_groups": 0,
+        "steps": 71
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3742952,
+        "rl_sequence_padded_tokens": 10504768,
+        "rl_loss_tokens": 1008091,
+        "backend_generated_tokens": 1006073,
+        "backend_requested_input_tokens": 6749197,
+        "backend_calls": 12150
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 71,
+      "loop_seconds": 2713.713573261164,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 13.713573261164129,
+      "overshoot_fraction": 0.00507910120783861,
+      "last_batch_seconds": 42.03551970701665,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_matched",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3302.784130680375,
+      "audit_seconds": 21.651369648985565,
+      "evaluation_seconds": 57.911904649809,
+      "elapsed_seconds": 3382.357478618622,
+      "allocated_gpu_hours_through_evaluation": 3.758174976242913,
+      "training_allocated_gpu_hours": 3.6697601452004163
+    }
+  },
+  "20261013/random_answer": {
+    "arm": "random_answer",
+    "seed": 20261013,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 299568,
+        "trajectories": 4288,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 128,
+        "retrieved_trajectories": 3619,
+        "shared_groups": 0,
+        "steps": 67
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3541194,
+        "rl_sequence_padded_tokens": 10129920,
+        "rl_loss_tokens": 1064045,
+        "backend_generated_tokens": 1061874,
+        "backend_requested_input_tokens": 6268705,
+        "backend_calls": 11179,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 116609,
+        "aux_sequence_padded_tokens": 125184,
+        "aux_loss_tokens": 296
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 75,
+        "training_gold_with_support_title_coverage": 25,
+        "examples": 75,
+        "answer_tokens": 296,
+        "gold_checked_clean_answer": 50
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 67,
+      "loop_seconds": 2710.5506856860593,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 10.550685686059296,
+      "overshoot_fraction": 0.003907661365207149,
+      "last_batch_seconds": 37.67958049941808,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3336.919173264876,
+      "audit_seconds": 21.594674508087337,
+      "evaluation_seconds": 47.31309958919883,
+      "elapsed_seconds": 3405.8341085910797,
+      "allocated_gpu_hours_through_evaluation": 3.7842601206567554,
+      "training_allocated_gpu_hours": 3.7076879702943066
+    }
+  },
+  "20261013/paired_answer": {
+    "arm": "paired_answer",
+    "seed": 20261013,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 279613,
+        "trajectories": 4224,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 98,
+        "retrieved_trajectories": 3558,
+        "shared_groups": 150,
+        "steps": 66
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3547595,
+        "rl_sequence_padded_tokens": 9795456,
+        "rl_loss_tokens": 1006341,
+        "backend_generated_tokens": 1015457,
+        "backend_requested_input_tokens": 6433444,
+        "backend_calls": 11029,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 113376,
+        "aux_sequence_padded_tokens": 120252,
+        "aux_loss_tokens": 314
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 78,
+        "gold_checked_clean_answer": 48,
+        "examples": 72,
+        "answer_tokens": 314,
+        "training_gold_with_support_title_coverage": 24
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 66,
+      "loop_seconds": 2716.918354540132,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 16.918354540131986,
+      "overshoot_fraction": 0.0062660572370858425,
+      "last_batch_seconds": 35.05141973588616,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_role": 150,
+        "train_direct": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3304.0175564521924,
+      "audit_seconds": 22.049914307892323,
+      "evaluation_seconds": 56.6587127475068,
+      "elapsed_seconds": 3382.736637353897,
+      "allocated_gpu_hours_through_evaluation": 3.7585962637265524,
+      "training_allocated_gpu_hours": 3.671130618280214
+    }
+  },
+  "20261013/clean": {
+    "arm": "clean",
+    "seed": 20261013,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 269858,
+        "trajectories": 4736,
+        "shared_trajectories": 0,
+        "actual_exposed": 0,
+        "exposed_with_nonzero_advantage": 0,
+        "retrieved_trajectories": 4127,
+        "shared_groups": 0,
+        "steps": 74
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3643507,
+        "rl_sequence_padded_tokens": 9996480,
+        "rl_loss_tokens": 922706,
+        "backend_generated_tokens": 920429,
+        "backend_requested_input_tokens": 6428608,
+        "backend_calls": 12245
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 74,
+      "loop_seconds": 2710.1920116795227,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 10.192011679522693,
+      "overshoot_fraction": 0.0037748191405639897,
+      "last_batch_seconds": 26.397439217194915,
+      "actual_exposed": 0,
+      "target_exposed": 0,
+      "exposure_templates": {},
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "clean",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3279.7575224544853,
+      "audit_seconds": 21.148273780941963,
+      "evaluation_seconds": 89.85128934960812,
+      "elapsed_seconds": 3390.764983654022,
+      "allocated_gpu_hours_through_evaluation": 3.7675166485044693,
+      "training_allocated_gpu_hours": 3.644175024949428
+    }
+  },
+  "20261013/paired": {
+    "arm": "paired",
+    "seed": 20261013,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 234415,
+        "trajectories": 4928,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 86,
+        "retrieved_trajectories": 4444,
+        "shared_groups": 150,
+        "steps": 77
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3809850,
+        "rl_sequence_padded_tokens": 10649792,
+        "rl_loss_tokens": 783056,
+        "backend_generated_tokens": 790399,
+        "backend_requested_input_tokens": 6788102,
+        "backend_calls": 12405
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 77,
+      "loop_seconds": 2702.411171090789,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 2.4111710907891393,
+      "overshoot_fraction": 0.0008930263299218311,
+      "last_batch_seconds": 27.053393561393023,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3334.201490016654,
+      "audit_seconds": 21.028885998763144,
+      "evaluation_seconds": 45.426083605736494,
+      "elapsed_seconds": 3400.6660578250885,
+      "allocated_gpu_hours_through_evaluation": 3.778517842027876,
+      "training_allocated_gpu_hours": 3.704668322240727
+    }
+  },
+  "20261014/paired_answer": {
+    "arm": "paired_answer",
+    "seed": 20261014,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 264318,
+        "trajectories": 4352,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 108,
+        "retrieved_trajectories": 3777,
+        "shared_groups": 150,
+        "steps": 68
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3533022,
+        "rl_sequence_padded_tokens": 9975232,
+        "rl_loss_tokens": 900063,
+        "backend_generated_tokens": 908865,
+        "backend_requested_input_tokens": 6112117,
+        "backend_calls": 10738,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 91389,
+        "aux_sequence_padded_tokens": 101220,
+        "aux_loss_tokens": 238
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 90,
+        "examples": 60,
+        "answer_tokens": 238,
+        "training_gold_with_support_title_coverage": 18,
+        "gold_checked_clean_answer": 42
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 68,
+      "loop_seconds": 2724.7475920431316,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 24.74759204313159,
+      "overshoot_fraction": 0.009165774830789397,
+      "last_batch_seconds": 26.105257497169077,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3326.9173680711538,
+      "audit_seconds": 23.79169140011072,
+      "evaluation_seconds": 68.29739535413682,
+      "elapsed_seconds": 3419.0189802646637,
+      "allocated_gpu_hours_through_evaluation": 3.7989099780718485,
+      "training_allocated_gpu_hours": 3.6965748534123932
+    }
+  },
+  "20261014/paired": {
+    "arm": "paired",
+    "seed": 20261014,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 270688,
+        "trajectories": 4480,
+        "shared_trajectories": 600,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 96,
+        "retrieved_trajectories": 3594,
+        "shared_groups": 150,
+        "steps": 70
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3648797,
+        "rl_sequence_padded_tokens": 10065088,
+        "rl_loss_tokens": 981068,
+        "backend_generated_tokens": 993165,
+        "backend_requested_input_tokens": 6854791,
+        "backend_calls": 11939
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 70,
+      "loop_seconds": 2710.549219547771,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 10.549219547770917,
+      "overshoot_fraction": 0.003907118351026195,
+      "last_batch_seconds": 27.81757804378867,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "paired",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3328.482014004141,
+      "audit_seconds": 21.141326579265296,
+      "evaluation_seconds": 52.04592780675739,
+      "elapsed_seconds": 3401.675806045532,
+      "allocated_gpu_hours_through_evaluation": 3.779639784495036,
+      "training_allocated_gpu_hours": 3.6983133488934903
+    }
+  },
+  "20261014/random_matched": {
+    "arm": "random_matched",
+    "seed": 20261014,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 250140,
+        "trajectories": 4672,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 106,
+        "retrieved_trajectories": 4079,
+        "shared_groups": 0,
+        "steps": 73
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3528793,
+        "rl_sequence_padded_tokens": 10054528,
+        "rl_loss_tokens": 837992,
+        "backend_generated_tokens": 835615,
+        "backend_requested_input_tokens": 6259461,
+        "backend_calls": 11973
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 73,
+      "loop_seconds": 2715.6321745608,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 15.632174560800195,
+      "overshoot_fraction": 0.005789694281777891,
+      "last_batch_seconds": 33.50570999272168,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_matched",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3328.8213895261288,
+      "audit_seconds": 24.528389466926455,
+      "evaluation_seconds": 44.02744354493916,
+      "elapsed_seconds": 3397.390631914139,
+      "allocated_gpu_hours_through_evaluation": 3.7748784799045985,
+      "training_allocated_gpu_hours": 3.6986904328068095
+    }
+  },
+  "20261014/clean": {
+    "arm": "clean",
+    "seed": 20261014,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 246540,
+        "trajectories": 4672,
+        "shared_trajectories": 0,
+        "actual_exposed": 0,
+        "exposed_with_nonzero_advantage": 0,
+        "retrieved_trajectories": 4060,
+        "shared_groups": 0,
+        "steps": 73
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3806705,
+        "rl_sequence_padded_tokens": 10908544,
+        "rl_loss_tokens": 982897,
+        "backend_generated_tokens": 980405,
+        "backend_requested_input_tokens": 6863404,
+        "backend_calls": 12371
+      },
+      "auxiliary_sources": {},
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 73,
+      "loop_seconds": 2716.0083371615037,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 16.008337161503732,
+      "overshoot_fraction": 0.0059290137635199525,
+      "last_batch_seconds": 27.549102265387774,
+      "actual_exposed": 0,
+      "target_exposed": 0,
+      "exposure_templates": {},
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "clean",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3302.788107490167,
+      "audit_seconds": 23.864731727167964,
+      "evaluation_seconds": 62.77103084884584,
+      "elapsed_seconds": 3389.4356598854065,
+      "allocated_gpu_hours_through_evaluation": 3.766039622094896,
+      "training_allocated_gpu_hours": 3.6697645638779632
+    }
+  },
+  "20261014/random_answer": {
+    "arm": "random_answer",
+    "seed": 20261014,
+    "training": {
+      "status": "REAL_ROLLOUT_MASK_AND_ADVANTAGE_VALIDATED",
+      "counts": {
+        "nonzero_advantage_tokens": 255445,
+        "trajectories": 4480,
+        "shared_trajectories": 0,
+        "actual_exposed": 300,
+        "exposed_with_nonzero_advantage": 116,
+        "retrieved_trajectories": 3845,
+        "shared_groups": 0,
+        "steps": 70
+      },
+      "cost": {
+        "rl_sequence_nonpadding_tokens": 3421336,
+        "rl_sequence_padded_tokens": 9502592,
+        "rl_loss_tokens": 865800,
+        "backend_generated_tokens": 862893,
+        "backend_requested_input_tokens": 5652356,
+        "backend_calls": 10894,
+        "aux_sequence_nonpadding_tokens_including_dp_padding": 103864,
+        "aux_sequence_padded_tokens": 110276,
+        "aux_loss_tokens": 267
+      },
+      "auxiliary_sources": {
+        "groups_considered": 150,
+        "skipped_no_verified_target": 80,
+        "examples": 70,
+        "answer_tokens": 267,
+        "gold_checked_clean_answer": 45,
+        "training_gold_with_support_title_coverage": 25
+      },
+      "cost_limitations": "Input tokens count actual backend requests, not cache-adjusted FLOPs. RL sequence tokens are one tensor pass proxy; policy/reference/rollout-logprob and backward differ in cost. Auxiliary includes zero-loss DP padding. Equal optimizer steps are not equal total computation."
+    },
+    "budget": {
+      "status": "BUDGET_AND_EXPOSURE_RECONCILED",
+      "effective_steps": 70,
+      "loop_seconds": 2714.7741301264614,
+      "budget_seconds": 2700.0,
+      "overshoot_seconds": 14.774130126461387,
+      "overshoot_fraction": 0.005471900046837508,
+      "last_batch_seconds": 36.14861673209816,
+      "actual_exposed": 300,
+      "target_exposed": 300,
+      "exposure_templates": {
+        "train_direct": 150,
+        "train_role": 150
+      },
+      "time_budget_reached": true,
+      "exposure_target_reached": true,
+      "matched_interpretation_allowed": true,
+      "limitation": "Endpoint is first completed batch at the shared loop-time budget. Includes RL and auxiliary supervision; excludes initialization/export/evaluation/post-update sync. Actual token costs, GPU allocation time and overshoot remain separately reported. This is not exact FLOP matching."
+    },
+    "timing": {
+      "arm": "random_answer",
+      "gpus": 4,
+      "training_seconds_including_setup_and_export": 3403.9832347370684,
+      "audit_seconds": 26.96418576594442,
+      "evaluation_seconds": 212.24144984222949,
+      "elapsed_seconds": 3643.2243885993958,
+      "allocated_gpu_hours_through_evaluation": 4.048027098443773,
+      "training_allocated_gpu_hours": 3.7822035941522985
+    }
+  }
+}

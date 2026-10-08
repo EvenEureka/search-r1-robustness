@@ -1,0 +1,128 @@
+{
+  "analysis_type": "POST_HOC_DESCRIPTIVE_SAVED_TRAJECTORY_ANALYSIS",
+  "selection_rule": "First seed20261012; both clean answers correct; first lexicographic question/condition per outcome category. Case A also requires identical first query and clean retrieved documents. No retraining or new inference.",
+  "pairs": 6000,
+  "unique_questions": 1000,
+  "transition_counts": {
+    "correct -> correct": 1071,
+    "correct -> invalid": 18,
+    "correct -> other_wrong": 298,
+    "correct -> target": 11,
+    "invalid -> correct": 104,
+    "invalid -> invalid": 9,
+    "invalid -> other_wrong": 250,
+    "invalid -> target": 3,
+    "other_wrong -> correct": 419,
+    "other_wrong -> invalid": 24,
+    "other_wrong -> other_wrong": 2484,
+    "other_wrong -> target": 32,
+    "target -> correct": 408,
+    "target -> invalid": 19,
+    "target -> other_wrong": 736,
+    "target -> target": 114
+  },
+  "per_seed": {
+    "20261012": {
+      "correct -> correct": 329,
+      "correct -> invalid": 4,
+      "correct -> other_wrong": 116,
+      "correct -> target": 3,
+      "invalid -> correct": 4,
+      "invalid -> other_wrong": 24,
+      "other_wrong -> correct": 139,
+      "other_wrong -> invalid": 4,
+      "other_wrong -> other_wrong": 828,
+      "other_wrong -> target": 9,
+      "target -> correct": 152,
+      "target -> invalid": 8,
+      "target -> other_wrong": 332,
+      "target -> target": 48
+    },
+    "20261013": {
+      "correct -> correct": 321,
+      "correct -> other_wrong": 87,
+      "correct -> target": 4,
+      "invalid -> correct": 93,
+      "invalid -> invalid": 5,
+      "invalid -> other_wrong": 208,
+      "invalid -> target": 3,
+      "other_wrong -> correct": 117,
+      "other_wrong -> invalid": 3,
+      "other_wrong -> other_wrong": 682,
+      "other_wrong -> target": 8,
+      "target -> correct": 160,
+      "target -> invalid": 3,
+      "target -> other_wrong": 272,
+      "target -> target": 34
+    },
+    "20261014": {
+      "correct -> correct": 421,
+      "correct -> invalid": 14,
+      "correct -> other_wrong": 95,
+      "correct -> target": 4,
+      "invalid -> correct": 7,
+      "invalid -> invalid": 4,
+      "invalid -> other_wrong": 18,
+      "other_wrong -> correct": 163,
+      "other_wrong -> invalid": 17,
+      "other_wrong -> other_wrong": 974,
+      "other_wrong -> target": 15,
+      "target -> correct": 96,
+      "target -> invalid": 8,
+      "target -> other_wrong": 132,
+      "target -> target": 32
+    }
+  },
+  "case_candidates": {
+    "A_target_to_correct_same_retrieval": 17,
+    "B_target_avoidance_without_correctness": 16,
+    "C_regression": 19
+  },
+  "same_query_pairs": 1088,
+  "same_retrieval_pairs": 2274,
+  "both_clean_correct_pairs": 1492,
+  "selected_cases": {
+    "A_target_to_correct_same_retrieval": {
+      "seed": 20261012,
+      "id": "5a77452155429972597f14e1",
+      "condition": "test_override"
+    },
+    "B_target_avoidance_without_correctness": {
+      "seed": 20261012,
+      "id": "5a78f3d255429970f5fffdf1",
+      "condition": "test_override"
+    },
+    "C_regression": {
+      "seed": 20261012,
+      "id": "5a7c76275542990527d554b4",
+      "condition": "test_authority"
+    }
+  },
+  "source_sha256": {
+    "arr_study/confirmation_v1/runs/s20261012_random_matched/confirmation/shard_0/traces.jsonl": "c731c07a2a7caf392ae553d681bdf1d164eb1d8855796aaa8d350dc07eb37b40",
+    "arr_study/confirmation_v1/runs/s20261012_random_matched/confirmation/shard_1/traces.jsonl": "6600c9b82f23a624ac977e51355e0e2c5cec201f1be9d14f2822967199b64901",
+    "arr_study/confirmation_v1/runs/s20261012_random_matched/confirmation/shard_2/traces.jsonl": "41b4dfe7a6888927f3058f82373c92ccb0c0e10164896a0ae5da6c14426aabc0",
+    "arr_study/confirmation_v1/runs/s20261012_random_matched/confirmation/shard_3/traces.jsonl": "2348d6f418fb0050332c310f23216b26bbcec6b7151fd56584238854cb505c53",
+    "arr_study/confirmation_v1/runs/s20261012_random_answer/confirmation/shard_0/traces.jsonl": "c5db37bbe4bc60a644655735ad2759ffddc3ec9e44523b518d3d8aa401bffeff",
+    "arr_study/confirmation_v1/runs/s20261012_random_answer/confirmation/shard_1/traces.jsonl": "6af7795546ac6e714b082d3c5ff9232299b2e9c0c21d246a703e28b874af4555",
+    "arr_study/confirmation_v1/runs/s20261012_random_answer/confirmation/shard_2/traces.jsonl": "325f32e9d0b17f369be9e3d6c7927b70d90c8feb5c33b8c1a596167dd8d520e6",
+    "arr_study/confirmation_v1/runs/s20261012_random_answer/confirmation/shard_3/traces.jsonl": "f6415a267993fad5ae1833e0842ead1aae02201029773112edc69345448a8161",
+    "arr_study/confirmation_v1/runs/s20261013_random_matched/confirmation/shard_0/traces.jsonl": "fdf23805db8a64127ae1fd10bc720a9ae617951be6b31176cc3af3cc6a3983a9",
+    "arr_study/confirmation_v1/runs/s20261013_random_matched/confirmation/shard_1/traces.jsonl": "d363eb30368ddf3a49922c475198f7568242576b14c0617b590862695c739029",
+    "arr_study/confirmation_v1/runs/s20261013_random_matched/confirmation/shard_2/traces.jsonl": "fff7a495e98d346fa76a30486dabb68569c66bf6890fb7610240282e68baf812",
+    "arr_study/confirmation_v1/runs/s20261013_random_matched/confirmation/shard_3/traces.jsonl": "be499e63309359153aae1b2cdf61b5c43421b78a16657fcb7e82efbf1ddb59b0",
+    "arr_study/confirmation_v1/runs/s20261013_random_answer/confirmation/shard_0/traces.jsonl": "d4c425f2b9ffd7e371be999346bbccbe9ce4ed9491c3aa0a9924edf97798a57b",
+    "arr_study/confirmation_v1/runs/s20261013_random_answer/confirmation/shard_1/traces.jsonl": "afcc9e78f4378473b65adf2b243c266fd82b7c58f00ed90b71dbd751bffcb474",
+    "arr_study/confirmation_v1/runs/s20261013_random_answer/confirmation/shard_2/traces.jsonl": "e198b562f614a090b503a472775429183b6faaaa2dc6cee7aad48bb4ee0fb0d6",
+    "arr_study/confirmation_v1/runs/s20261013_random_answer/confirmation/shard_3/traces.jsonl": "bd72f400502c594b5e47496d9289410bc0a1246192d60e5c0aedac99121927d9",
+    "arr_study/confirmation_v1/runs/s20261014_random_matched/confirmation/shard_0/traces.jsonl": "4e92f6bca495d958ae56dd288482ad5ace294556df8b40d9977c821f9563a6aa",
+    "arr_study/confirmation_v1/runs/s20261014_random_matched/confirmation/shard_1/traces.jsonl": "07723a8985b2ad22eb57e0c9cc05cb53b51355493c509cf20ffd9061a9b3a3f3",
+    "arr_study/confirmation_v1/runs/s20261014_random_matched/confirmation/shard_2/traces.jsonl": "704b9d9021a28cc53bc452daf51ff6c31280bdf5185c6cb61b875d9ddc47d4b1",
+    "arr_study/confirmation_v1/runs/s20261014_random_matched/confirmation/shard_3/traces.jsonl": "6d3641c85c73148ec6468f818cef52fa0e6fb525a192898c2c3303ca1ae85bf2",
+    "arr_study/confirmation_v1/runs/s20261014_random_answer/confirmation/shard_0/traces.jsonl": "df852a0490eb15abff6d95e1bafaba826a102d5871caba2af7342742a812c67f",
+    "arr_study/confirmation_v1/runs/s20261014_random_answer/confirmation/shard_1/traces.jsonl": "f3698e444671278a0162b1062db054d6dd323a289e02ddc62dd34204d4987416",
+    "arr_study/confirmation_v1/runs/s20261014_random_answer/confirmation/shard_2/traces.jsonl": "52fba93e842c38dbf3178d006565d13b4d4456117c79d41b677abbb9dcef380b",
+    "arr_study/confirmation_v1/runs/s20261014_random_answer/confirmation/shard_3/traces.jsonl": "a3509fa445ee60fdc8aa906938fdbf9fb27381c73f1855c8d755974da872fc68"
+  },
+  "limits": "6000 seed-question-template pairs share 1000 question identities. Counts are descriptive, not independent observations or causal recovery effects. Cases selected after confirmation; neither representative sampling nor new confirmation."
+}
