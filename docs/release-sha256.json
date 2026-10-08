@@ -3,9 +3,9 @@
   "assets/confirmation.pdf": "34b1d97a674adb2f86aab414cc097e4e0369fa66ed220fa9a9cc288cf12a0172",
   "assets/confirmation.png": "9c8b036eed5c4eef2268363645658ec78984dd6235edafcd50677f953cf27c9c",
   "assets/confirmation.svg": "33ec8b461dc7ea5c367d92b0aa1393887fec2314d1ca8f19942fc9931b901030",
-  "assets/favicon.svg": "f5c2670bde32d63693d99a9753e76fc018856a7c7a81c1b4f3dbc9ed2d843040",
-  "assets/project.css": "38dbd3e21dc5caa5ea2c97710e3fd427de5f09178977773e4515864a6a620a2c",
-  "assets/project.js": "324c69ea701738ff11b8646b7704fbe28e125f314e93985e6cb80d69966b8d9b",
+  "assets/favicon.svg": "45c440881d4f76c437f587b6f6aed6b8aee1b6bb4baf1136d50244e0085976ac",
+  "assets/project.css": "5e95250d6c190df95b6aff4a85819d4f12d83cd4e7618b5e6f85247487acb5bb",
+  "assets/project.js": "0262d16a77dbe6d450e2bc4c7e6f6742dc969b5c190026a3a8acb2b17be4df40",
   "assets/report.css": "1c10129ed3ce74ce1699a221cb35f44625e4c4effbcee1ceebc2e70938bff8c6",
   "assets/style.css": "1c10129ed3ce74ce1699a221cb35f44625e4c4effbcee1ceebc2e70938bff8c6",
   "citation.bib": "1a0b0e944919273e6364f6b7f61d1866e1ebd150e34e7acda2140bec79c27a67",
@@ -24,7 +24,7 @@
   "data/training-accounting.json": "76efb1565967b3f8cd1ae5066d7120828aa0a4f573613e0d2d20f8220eb34928",
   "emnlp-manuscript.pdf": "fdc7ab1e8ac68b424878c4ce90440f248a6441683f90e200e512043dcf0545f2",
   "emnlp-source.zip": "5880176c9d6e1e10569833f25baa2b49cec2ada0e98e9aaa3d1a06e042e71e8a",
-  "index.html": "de3922666f0f5500d13ff2d50d767d3699c4288b745ad660373407fc3c7b217e",
+  "index.html": "d164e92c858a4aa5790be20e4377d51b9f56e29574aa926af9b9ccf3901ab357",
   "manuscript.pdf": "44fa8bc2b7cf111044a08cde38d23b1e424bc25e010c22dc419e9d9730bd347e",
   "report.html": "cb00d5dc583ff07ac6a7041ad706202ecc67919bcccee3c1145093d9ef313f2b"
 }

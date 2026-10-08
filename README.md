@@ -2,7 +2,7 @@
 
 A research project website by **Yiwen Lu · University of Notre Dame** accompanying *Attack Resistance Is Only Half the Answer: Evaluating Search-Agent Reliability*.
 
-The homepage uses a modern research-release layout: large typography, generous white space, a wide research diagram, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, and all conditions of three saved cases. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
+The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, and all conditions of three saved cases. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
 
 ## Read locally
 
@@ -38,8 +38,8 @@ The full builder verifies aggregate means, sample standard deviations, primary s
 | --- | --- |
 | `templates/index.html` | Homepage structure and narrative |
 | `project_site.py` | Frozen-data preparation, static rendering, citation, release hashes |
-| `docs/assets/project.css` | Research-release visual design, responsive layout, and components |
-| `docs/assets/project.js` | Citation copying; all research content is statically rendered |
+| `docs/assets/project.css` | Academic visual design, navy/teal themes, responsive layout, and components |
+| `docs/assets/project.js` | Light/dark theme and citation copying; all evidence is statically rendered |
 | `manuscript.json`, `build_report.py` | Earlier technical report and verified tables |
 | `verify_site.py` | Browser checks for continuous visibility, data, links, and responsive layout |
 
@@ -53,7 +53,7 @@ With the local server running:
 .venv/bin/python verify_site.py --url http://127.0.0.1:8765/ --output /tmp/searchr1-site-review
 ```
 
-Checks cover both hero configurations, 15 chart means and 45 seed values, 18 case answers, four paired outcomes, no hidden panels or collapsed sections, local links, clipboard, reduced motion, keyboard entry, complete no-JavaScript content, and widths 320, 390, 768, and 1440 pixels. Screenshots and a validation JSON are written to the selected output directory.
+Checks cover both hero configurations, 15 chart means and 45 seed values, 18 case answers, four paired outcomes, no hidden panels or collapsed sections, local links, clipboard, persistent theme switching, reduced motion, keyboard entry, complete no-JavaScript content, and widths 320, 390, 768, and 1440 pixels. Screenshots and a validation JSON are written to the selected output directory.
 
 ## Evidence
 

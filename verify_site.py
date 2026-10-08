@@ -53,10 +53,16 @@ with sync_playwright() as p:
   page.locator('[data-chart="clean_em"]').scroll_into_view_if_needed();assert page.locator('[data-chart="clean_em"]').is_visible()
   page.screenshot(path=str(out/(label+'-results.png')))
  checks.append('Continuous scroll and layout pass at 1440, 768, 390 and 320 px.')
+ page.set_viewport_size({'width':1440,'height':1100});page.evaluate('scrollTo({top:0,behavior:"instant"})')
+ page.locator('#theme-toggle').click();assert page.locator('html').get_attribute('data-theme')=='dark'
+ page.reload(wait_until='networkidle');assert page.locator('html').get_attribute('data-theme')=='dark'
+ page.screenshot(path=str(out/'desktop-dark.png'))
+ page.locator('#theme-toggle').click();assert page.locator('html').get_attribute('data-theme')=='light'
+ checks.append('Dark/light theme switching persists across reloads; light mode is restored.')
  page.emulate_media(reduced_motion='reduce');assert page.evaluate('getComputedStyle(document.documentElement).scrollBehavior')=='auto'
  page.goto(args.url,wait_until='networkidle');page.keyboard.press('Tab');assert page.evaluate('document.activeElement.className')=='skip-link'
  assert not errors,errors
- assert all(urlparse(u).hostname in ['127.0.0.1','localhost'] for u in requests)
+ assert all(urlparse(u).hostname in ['127.0.0.1','localhost',urlparse(args.url).hostname] for u in requests)
  checks.append('Keyboard entry, reduced motion, no browser errors and no external asset requests pass.')
  context.close()
  nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844});pg=nojs.new_page();pg.goto(args.url)
