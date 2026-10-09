@@ -72,7 +72,7 @@ def build_site():
     assert '@@' not in template
     (DOCS/'index.html').write_text(template)
     (DOCS/'citation.bib').write_text('''@misc{lu2026attackresistance,
-  title={Attack Resistance Is Only Half the Answer: Evaluating Search-Agent Reliability},
+  title={SARRA: Attack Resistance Is Only Half the Answer for Search Agents},
   author={Lu, Yiwen},
   year={2026},
   note={Working manuscript; not peer reviewed}

@@ -1,6 +1,8 @@
-# Attack Resistance Is Only Half the Answer
+# SARRA
 
-A research project website by **Yiwen Lu · University of Notre Dame** accompanying *Attack Resistance Is Only Half the Answer: Evaluating Search-Agent Reliability*.
+Search-Agent Reliability under Retrieval Attacks
+
+A research project website by **Yiwen Lu · University of Notre Dame** accompanying *SARRA: Attack Resistance Is Only Half the Answer for Search Agents*.
 
 The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, and all conditions of three saved cases. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
 
