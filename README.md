@@ -4,7 +4,7 @@ Search-Agent Reliability under Retrieval Attacks
 
 A research project website by **Yiwen Lu · University of Notre Dame** accompanying *SARRA: Attack Resistance Is Only Half the Answer for Search Agents*.
 
-The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, all conditions of three saved cases, and the new 3B/7B development and paired evidence results. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
+The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, the 6,000 paired answers sorted into three kinds of change (wrong to correct, target to another wrong answer, correct to wrong) with one saved case of each kind, and the 3B/7B development and paired evidence results. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency, and the corrected rerun it calls for, are stated in the scope section alongside the results.
 
 ## Read locally
 

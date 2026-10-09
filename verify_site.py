@@ -37,6 +37,11 @@ with sync_playwright() as p:
   n=study['transitions']['target -> '+key];node=page.locator(f'[data-outcome="{key}"]')
   assert node.is_visible() and f'{n:,} · {100*n/1277:.1f}%' in node.inner_text()
  checks.append('All four paired outcomes and their denominators are visible together.')
+ tc=study['transitions']
+ kinds={'wrong_to_correct':sum(tc[k+' -> correct'] for k in ['target','other_wrong','invalid']),'target_to_other':tc['target -> other_wrong'],'correct_to_wrong':sum(tc['correct -> '+k] for k in ['target','other_wrong','invalid'])}
+ for key,n in kinds.items():
+  node=page.locator(f'[data-kind="{key}"]');assert node.is_visible() and f'{n:,}' in node.inner_text(),key
+ checks.append('The three kinds of paired change (wrong to correct, target to another wrong answer, correct to wrong) match the released transition counts.')
  cross=json.loads((ROOT/'docs/data/cross-model-development.json').read_text())
  branch=json.loads((ROOT/'docs/data/evidence-branch-7b.json').read_text())
  for condition,models in cross['conditions'].items():

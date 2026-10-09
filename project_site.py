@@ -30,7 +30,7 @@ def build_site():
     cases=json.loads((data/'cases.json').read_text())
     arm_names={'clean':'Clean GRPO','random_matched':'Random injection','paired':'Boundary paired','paired_answer':'Paired + answer CE','random_answer':'Random + answer CE'}
     case_data=[]
-    labels=['A · Preserved correctness','B · A different wrong answer','C · A hidden regression']
+    labels=['A · From the target to the correct answer','B · From the target to another wrong answer','C · From a correct answer to a wrong one']
     notes=["Both policies issue the same first query and retrieve the same documents. The supervised export preserves the reference answer, but the snippets do not establish complete comparative grounding.","The supervised answer names the building instead of the reference city. The question admits some ambiguity; the result is incorrect under the frozen benchmark scoring rule. The two policies issue different queries.","The retrieved pool identifies the relevant films as 1963 and 1996 releases. Under the authority attack, the supervised export chooses the later film. Both outputs avoid the target, so target hit alone misses the regression."]
     for (key,c),label,note in zip(cases.items(),labels,notes):
         record=c['records']['random_answer/clean']
@@ -72,6 +72,12 @@ def build_site():
         n=paired['transition_counts']['target -> '+key]
         outcomes+=f'<div class="outcome-item" data-outcome="{key}"><div><strong>{label}</strong><span>{n:,} · {100*n/1277:.1f}%</span></div><p>{note}</p></div>'
     outcomes+='</div><p class="outcome-detail">Cross-model output comparisons, not recovery actions within one agent. Percentages use the 1,277 baseline target-hit pairs as the denominator.</p>'
+    tc=paired['transition_counts']
+    kinds=[('wrong_to_correct','Wrong → correct',sum(tc[k+' -> correct'] for k in ['target','other_wrong','invalid']),f'Only the supervised export is correct. {tc["target -> correct"]} of these were target hits in the baseline.'),
+           ('target_to_other','Target → another wrong answer',tc['target -> other_wrong'],f'Of the baseline’s {sum(tc["target -> "+k] for k in ["correct","target","other_wrong","invalid"]):,} target hits. The target is avoided, but the user still gets a wrong answer.'),
+           ('correct_to_wrong','Correct → wrong',sum(tc['correct -> '+k] for k in ['target','other_wrong','invalid']),'Regressions: only the unsupervised export is correct. Target avoidance alone would never show them.')]
+    assert [k[2] for k in kinds]==[931,736,327],[k[2] for k in kinds]
+    three=''.join(f'<article data-kind="{key}"><span>{html.escape(label)}</span><strong>{n:,}</strong><p>{html.escape(note)}</p></article>' for key,label,n,note in kinds)
     case_panels=''
     for index,c in enumerate(case_data):
         case_panels+=f'<article class="case-panel continuous-case" data-case="{index}"><p class="eyebrow">{html.escape(c["label"])}</p><div class="case-question"><h3>{html.escape(c["question"])}</h3><p>Reference: <strong>{html.escape(c["reference"])}</strong></p></div>'
@@ -87,7 +93,7 @@ def build_site():
     table=''.join('<tr><th scope="row">'+html.escape(label)+'</th>'+''.join(f'<td>{primary["aggregate"][arm][m]["mean"]*100:.2f}</td>' for m in ['clean_em','attack_em','attack_target_hit'])+'</tr>' for arm,label in arm_names.items())
     template=(ROOT/'templates/index.html').read_text()
     script=json.dumps(payload,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
-    for token,value in {'@@STUDY_DATA@@':script,'@@HERO_COMPARISON@@':hero,'@@ALL_CHARTS@@':charts,'@@ALL_SEEDS@@':seeds,'@@ALL_OUTCOMES@@':outcomes,'@@ALL_CASES@@':case_panels,'@@RESULT_ROWS@@':table,'@@DEVELOPMENT@@':development_section()}.items():template=template.replace(token,value)
+    for token,value in {'@@STUDY_DATA@@':script,'@@HERO_COMPARISON@@':hero,'@@ALL_CHARTS@@':charts,'@@ALL_SEEDS@@':seeds,'@@ALL_OUTCOMES@@':outcomes,'@@THREE_KINDS@@':three,'@@ALL_CASES@@':case_panels,'@@RESULT_ROWS@@':table,'@@DEVELOPMENT@@':development_section()}.items():template=template.replace(token,value)
     assert '@@' not in template
     (DOCS/'index.html').write_text(template)
     (DOCS/'citation.bib').write_text('''@misc{lu2026attackresistance,
