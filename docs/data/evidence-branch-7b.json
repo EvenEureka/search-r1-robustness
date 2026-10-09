@@ -1,0 +1,217 @@
+{
+  "status": "COMPLETE_VALIDATED",
+  "conditions": {
+    "clean": {
+      "all_question_denominator": 256,
+      "eligible_states": 188,
+      "eligibility_rate": 0.734375,
+      "branches": {
+        "new": {
+          "eligible_mean": {
+            "em": 0.5691489361702128,
+            "target_hit": 0.0,
+            "other_wrong": 0.42021276595744683,
+            "format_failure": 0.010638297872340425,
+            "searches": 2.1914893617021276,
+            "actual_exposure": 0.0
+          },
+          "all_question_mean": {
+            "em": 0.55859375,
+            "target_hit": 0.0,
+            "other_wrong": 0.43359375,
+            "format_failure": 0.0078125,
+            "searches": 1.875,
+            "actual_exposure": 0.0
+          },
+          "budget_exhausted": 2,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 224,
+            "requested_input_tokens": 255787,
+            "generated_tokens": 12106
+          },
+          "continuation_seconds": 163.3414062652737
+        },
+        "repeat": {
+          "eligible_mean": {
+            "em": 0.4734042553191489,
+            "target_hit": 0.0,
+            "other_wrong": 0.5212765957446809,
+            "format_failure": 0.005319148936170213,
+            "searches": 2.297872340425532,
+            "actual_exposure": 0.0
+          },
+          "all_question_mean": {
+            "em": 0.48828125,
+            "target_hit": 0.0,
+            "other_wrong": 0.5078125,
+            "format_failure": 0.00390625,
+            "searches": 1.953125,
+            "actual_exposure": 0.0
+          },
+          "budget_exhausted": 1,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 244,
+            "requested_input_tokens": 283160,
+            "generated_tokens": 11805
+          },
+          "continuation_seconds": 160.00169499404728
+        }
+      },
+      "new_minus_repeat_em": 0.09574468085106383,
+      "paired_question_bootstrap_95ci": [
+        0.03723404255319149,
+        0.15425531914893617
+      ],
+      "new_only_correct": 26,
+      "repeat_only_correct": 8,
+      "same_ordered_evidence": 14,
+      "any_new_document": 167,
+      "historical_new_branch_text_reproduced": 188,
+      "identical_evidence_output_mismatches": 0
+    },
+    "test_override": {
+      "all_question_denominator": 256,
+      "eligible_states": 185,
+      "eligibility_rate": 0.72265625,
+      "branches": {
+        "new": {
+          "eligible_mean": {
+            "em": 0.4810810810810811,
+            "target_hit": 0.016216216216216217,
+            "other_wrong": 0.42702702702702705,
+            "format_failure": 0.07567567567567568,
+            "searches": 2.3513513513513513,
+            "actual_exposure": 1.0
+          },
+          "all_question_mean": {
+            "em": 0.51171875,
+            "target_hit": 0.01953125,
+            "other_wrong": 0.4140625,
+            "format_failure": 0.0546875,
+            "searches": 1.9765625,
+            "actual_exposure": 1.0
+          },
+          "budget_exhausted": 14,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 250,
+            "requested_input_tokens": 313135,
+            "generated_tokens": 13853
+          },
+          "continuation_seconds": 187.2161509282887
+        },
+        "repeat": {
+          "eligible_mean": {
+            "em": 0.3621621621621622,
+            "target_hit": 0.02702702702702703,
+            "other_wrong": 0.5243243243243243,
+            "format_failure": 0.08648648648648649,
+            "searches": 2.464864864864865,
+            "actual_exposure": 1.0
+          },
+          "all_question_mean": {
+            "em": 0.42578125,
+            "target_hit": 0.02734375,
+            "other_wrong": 0.484375,
+            "format_failure": 0.0625,
+            "searches": 2.05859375,
+            "actual_exposure": 1.0
+          },
+          "budget_exhausted": 16,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 271,
+            "requested_input_tokens": 338797,
+            "generated_tokens": 15244
+          },
+          "continuation_seconds": 205.82886680215597
+        }
+      },
+      "new_minus_repeat_em": 0.11891891891891893,
+      "paired_question_bootstrap_95ci": [
+        0.06486486486486487,
+        0.1783783783783784
+      ],
+      "new_only_correct": 27,
+      "repeat_only_correct": 5,
+      "same_ordered_evidence": 22,
+      "any_new_document": 158,
+      "historical_new_branch_text_reproduced": 185,
+      "identical_evidence_output_mismatches": 0
+    },
+    "test_authority": {
+      "all_question_denominator": 256,
+      "eligible_states": 191,
+      "eligibility_rate": 0.74609375,
+      "branches": {
+        "new": {
+          "eligible_mean": {
+            "em": 0.581151832460733,
+            "target_hit": 0.0,
+            "other_wrong": 0.38219895287958117,
+            "format_failure": 0.03664921465968586,
+            "searches": 2.230366492146597,
+            "actual_exposure": 1.0
+          },
+          "all_question_mean": {
+            "em": 0.56640625,
+            "target_hit": 0.0,
+            "other_wrong": 0.40625,
+            "format_failure": 0.02734375,
+            "searches": 1.91796875,
+            "actual_exposure": 1.0
+          },
+          "budget_exhausted": 7,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 235,
+            "requested_input_tokens": 281351,
+            "generated_tokens": 12344
+          },
+          "continuation_seconds": 166.7874739766121
+        },
+        "repeat": {
+          "eligible_mean": {
+            "em": 0.4869109947643979,
+            "target_hit": 0.0,
+            "other_wrong": 0.4816753926701571,
+            "format_failure": 0.031413612565445025,
+            "searches": 2.345549738219895,
+            "actual_exposure": 1.0
+          },
+          "all_question_mean": {
+            "em": 0.49609375,
+            "target_hit": 0.0,
+            "other_wrong": 0.48046875,
+            "format_failure": 0.0234375,
+            "searches": 2.00390625,
+            "actual_exposure": 1.0
+          },
+          "budget_exhausted": 6,
+          "context_limit": 0,
+          "continuation_cost": {
+            "calls": 257,
+            "requested_input_tokens": 315204,
+            "generated_tokens": 13524
+          },
+          "continuation_seconds": 183.1285356208682
+        }
+      },
+      "new_minus_repeat_em": 0.09424083769633508,
+      "paired_question_bootstrap_95ci": [
+        0.03664921465968586,
+        0.1518324607329843
+      ],
+      "new_only_correct": 26,
+      "repeat_only_correct": 8,
+      "same_ordered_evidence": 7,
+      "any_new_document": 175,
+      "historical_new_branch_text_reproduced": 191,
+      "identical_evidence_output_mismatches": 0
+    }
+  },
+  "records": 1128,
+  "scope": "Paired intervention at observed second-search states. All-question results carry original outcomes for ineligible questions. Development only. New evidence is not guaranteed relevant or correct; this is not learned recovery. Bootstrap resamples questions within each condition. Shared prefix costs excluded from incremental continuation costs, allocation totals reported separately."
+}

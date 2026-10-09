@@ -4,7 +4,7 @@ Search-Agent Reliability under Retrieval Attacks
 
 A research project website by **Yiwen Lu · University of Notre Dame** accompanying *SARRA: Attack Resistance Is Only Half the Answer for Search Agents*.
 
-The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, and all conditions of three saved cases. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
+The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, paired outcomes, all conditions of three saved cases, and the new 3B/7B development and paired evidence results. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency and differences in supervision, evidence, and compute remain visible alongside the results.
 
 ## Read locally
 
@@ -55,7 +55,7 @@ With the local server running:
 .venv/bin/python verify_site.py --url http://127.0.0.1:8765/ --output /tmp/searchr1-site-review
 ```
 
-Checks cover both hero configurations, 15 chart means and 45 seed values, 18 case answers, four paired outcomes, no hidden panels or collapsed sections, local links, clipboard, persistent theme switching, reduced motion, keyboard entry, complete no-JavaScript content, and widths 320, 390, 768, and 1440 pixels. Screenshots and a validation JSON are written to the selected output directory.
+Checks cover both hero configurations, 15 chart means and 45 seed values, 18 case answers, four paired outcomes, all 14 cross-checkpoint rows and three paired evidence contrasts, no hidden panels or collapsed sections, local links, clipboard, persistent theme switching, reduced motion, keyboard entry, complete no-JavaScript content, and widths 320, 390, 768, and 1440 pixels. Screenshots and a validation JSON are written to the selected output directory.
 
 ## Evidence
 
@@ -73,6 +73,9 @@ The primary evaluation includes five training configurations, three seeds, and 1
 | `extension.json` | Separate context controls and transfer summaries |
 | `exploratory-diagnostics.json` | Separate exploratory diagnoses and limitations |
 | `provenance.json` | Source evidence hashes |
+| `cross-model-development.json` | Author 3B/7B results, all seven conditions on development256 |
+| `evidence-branch-7b.json` | New/repeated evidence, eligible and all-question outcomes, paired CIs and costs |
+| `development-provenance.json` | Development protocols, source hashes, checkpoint identities and separate training status |
 
 `docs/release-sha256.json` lists integrity hashes for the static release. Rates in CSVs are fractions; displayed percentages multiply them by 100. Search counts and costs are not percentages. Seed 1–3 retain their original identifiers in the data. All seeds remain available; no favorable seed is relabeled as a configuration.
 
@@ -80,7 +83,7 @@ This reporting release includes selected case questions and excerpts, but exclud
 
 ## Publish on GitHub Pages
 
-Intended repository: `EvenEureka/search-r1-robustness`. Intended URL: `https://eveneureka.github.io/search-r1-robustness/`. This is a destination, not a claim that publication has completed.
+Repository: `EvenEureka/search-r1-robustness`. Project site: https://eveneureka.github.io/search-r1-robustness/. The existing site is published through GitHub Pages; each release is checked against its content hashes.
 
 1. Create the public repository and initialize its `main` branch. Grant the connected GitHub app access if using it to upload.
 2. Upload this directory's contents to the repository root, preserving `docs/` and `templates/`.
@@ -88,3 +91,7 @@ Intended repository: `EvenEureka/search-r1-robustness`. Intended URL: `https://e
 4. Verify the deployed homepage, paper, source download, and interactions.
 
 The built files are served directly; no remote build or API key is needed. See [GitHub's publishing-source documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+## New development evidence
+
+The author 7B checkpoint has 1.95% override-target hit but 51.17% exact match (55.86% clean). At observed second-search states, new BM25 retrieval improves accuracy over repeated first-search clean evidence by 9.4–11.9 points. This comparison uses 564 condition-question states sharing 256 opened development questions, not 564 independent questions. The site presents conditional and all-question denominators separately. No new training method, size-only effect, or learned verification is inferred. The separate 7B numerical check passed, but the first GRPO smoke failed before updates; no 7B training-effect comparison is complete.

@@ -37,6 +37,21 @@ with sync_playwright() as p:
   n=study['transitions']['target -> '+key];node=page.locator(f'[data-outcome="{key}"]')
   assert node.is_visible() and f'{n:,} · {100*n/1277:.1f}%' in node.inner_text()
  checks.append('All four paired outcomes and their denominators are visible together.')
+ cross=json.loads((ROOT/'docs/data/cross-model-development.json').read_text())
+ branch=json.loads((ROOT/'docs/data/evidence-branch-7b.json').read_text())
+ for condition,models in cross['conditions'].items():
+  for model,r in models.items():
+   cells=page.locator(f'#cross-model-table [data-condition="{condition}"][data-model="{model}"] td').all_text_contents()
+   expected=[model.split('_')[-1].upper()]+[f'{100*r["rates"][m]:.2f}' for m in ['em','target_hit','other_wrong','format_failure']]+[f'{r["rates"]["searches"]:.3f}',f'{100*r["rates"]["actual_exposure"]:.0f}']
+   assert cells==expected,(condition,model,cells,expected)
+ for condition,r in branch['conditions'].items():
+  card=page.locator(f'[data-evidence="{condition}"]');assert card.is_visible()
+  for value in [f'{100*r["new_minus_repeat_em"]:.2f}',f'{100*r["branches"]["new"]["eligible_mean"]["em"]:.2f}',f'{100*r["branches"]["repeat"]["eligible_mean"]["em"]:.2f}']:
+   assert value in card.inner_text()
+  cells=page.locator(f'[data-evidence-all="{condition}"] td').all_text_contents()
+  assert cells==[f'{r["eligible_states"]} / 256',f'{100*r["branches"]["new"]["all_question_mean"]["em"]:.2f}',f'{100*r["branches"]["repeat"]["all_question_mean"]["em"]:.2f}',f'{r["new_only_correct"]} / {r["repeat_only_correct"]}']
+ checks.append('All 14 cross-checkpoint rows and three paired evidence contrasts match released records, including conditional and all-question denominators.')
+
  assert page.locator('details, [role="tab"], [role="tabpanel"], [hidden]').count()==0
  checks.append('No collapsed sections, tabs, or hidden evidence panels.')
  for href in page.locator('a[href]').evaluate_all('(xs)=>xs.map(x=>x.getAttribute("href"))'):

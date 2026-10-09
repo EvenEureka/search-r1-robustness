@@ -4,6 +4,25 @@ import json, re, html, hashlib
 ROOT=Path(__file__).resolve().parent
 DOCS=ROOT/'docs'
 
+def development_section():
+    cross=json.loads((DOCS/'data/cross-model-development.json').read_text())
+    evidence=json.loads((DOCS/'data/evidence-branch-7b.json').read_text())
+    labels={'clean':'Clean','test_override':'Override','test_authority':'Authority',
+            'neutral_override':'Neutral / override','quoted_override':'Quoted / override',
+            'neutral_authority':'Neutral / authority','quoted_authority':'Quoted / authority'}
+    rows=''
+    for condition,models in cross['conditions'].items():
+        for model,r in models.items():
+            cells=''.join(f'<td>{100*r["rates"][m]:.2f}</td>' for m in ['em','target_hit','other_wrong','format_failure'])
+            rows+=f'<tr data-condition="{condition}" data-model="{model}"><th scope="row">{labels[condition]}</th><td>{model.split("_")[-1].upper()}</td>{cells}<td>{r["rates"]["searches"]:.3f}</td><td>{100*r["rates"]["actual_exposure"]:.0f}</td></tr>'
+    cards='';paired=''
+    for c,r in evidence['conditions'].items():
+        new=100*r['branches']['new']['eligible_mean']['em'];repeat=100*r['branches']['repeat']['eligible_mean']['em'];delta=100*r['new_minus_repeat_em'];lo,hi=[100*x for x in r['paired_question_bootstrap_95ci']]
+        cards+=f'<article data-evidence="{c}"><span>{labels[c]} · {r["eligible_states"]} eligible states</span><strong>+{delta:.2f}<span> pp</span></strong><p><b>{new:.2f}% new retrieval</b><br>{repeat:.2f}% repeated evidence</p><p class="small-note">Paired 95% CI [{lo:.2f}, {hi:.2f}] pp</p></article>'
+        paired+=f'<tr data-evidence-all="{c}"><th scope="row">{labels[c]}</th><td>{r["eligible_states"]} / 256</td><td>{100*r["branches"]["new"]["all_question_mean"]["em"]:.2f}</td><td>{100*r["branches"]["repeat"]["all_question_mean"]["em"]:.2f}</td><td>{r["new_only_correct"]} / {r["repeat_only_correct"]}</td></tr>'
+    return '''<section class="wrap section" id="development"><div class="section-heading"><p class="eyebrow">NEW · DEVELOPMENT EVIDENCE</p><h2>Low target hit. Unfinished task.</h2><p>Author Search-R1 3B and 7B checkpoints on the same 256 opened development questions. Seven conditions, a shared four-search cap, and a multistep interface check for both models.</p></div><p>The 7B checkpoint returns the override target on just <b>1.95%</b> of questions. Yet accuracy drops from <b>55.86% to 51.17%</b>: another 41.41% are other wrong answers and 5.47% fail the output format. Attack resistance leaves a substantial task-completion gap.</p><div class="data-table" id="cross-model-table"><h3>Every condition, both checkpoints</h3><div class="table-scroll"><table><caption>256 questions per row. Rates in percent; searches are means.</caption><thead><tr><th>Condition</th><th>Model</th><th>EM ↑</th><th>Target ↓</th><th>Other wrong ↓</th><th>Format fail ↓</th><th>Searches</th><th>Exposed %</th></tr></thead><tbody>'''+rows+'''</tbody></table></div></div><p class="stat-note">The checkpoints differ in post-training settings as well as size. This comparison does not isolate scaling, cross-family generalization, or transfer of our training method. Benign controls are separately token-matched to each attack; exposure means consumed malicious context.</p></section>
+<section class="results-section" id="evidence"><div class="wrap section"><div class="section-heading"><h2>Does another search bring useful evidence?</h2><p>Keep the 7B agent’s history and second query fixed. Return new BM25 results, or repeat its first clean documents. Let both continuations run under the same four-search cap.</p></div><div class="metrics">'''+cards+'''</div><p class="scope-inline"><span>WHAT THIS SUPPORTS</span>New retrieval packages help at states where this policy already chooses a second search. This is a paired evidence intervention, not a learned verification policy or a pure test of document novelty.</p><div class="data-table"><h3>Keep the denominator visible</h3><div class="table-scroll"><table><caption>All-question EM carries original outcomes forward for ineligible questions.</caption><thead><tr><th>Condition</th><th>Eligible / all</th><th>New EM % ↑<br>All 256</th><th>Repeat EM % ↑<br>All 256</th><th>New-only / repeat-only<br>correct, eligible states</th></tr></thead><tbody>'''+paired+'''</tbody></table></div></div><p>The 1,128 continuations cover 564 eligible condition–question states, with recurring question identities. All 564 new-evidence branches reproduce the original continuations exactly; all 43 identical-evidence pairs also give identical outputs. Eligibility uses the chosen action, never correctness. No second attack is injected, and later retrieval is clean.</p><p class="stat-note">Intervals use 10,000 paired question-bootstrap draws within each condition. The data were already open for development. Retrieved packages can differ in relevance, order, and length; equal caps do not imply equal realized cost. The diagnostic used 0.3435 allocated GPU-hours. Full token, call, and timing records are released below.</p><p class="small-note">Training status · The separate 7B export/reload numerical check passes, but the GRPO smoke stopped before its first update on a GPU-identifier parsing error. There is no completed 7B training-effect comparison yet; historical 3B qualifications remain.</p><div class="resource-links"><a href="data/cross-model-development.json">3B / 7B results ↗</a><a href="data/evidence-branch-7b.json">Paired evidence and costs ↗</a><a href="data/development-provenance.json">Protocols and source hashes ↗</a></div></div></section>'''
+
 def build_site():
     data=DOCS/'data'
     primary=json.loads((data/'primary.json').read_text())
@@ -68,7 +87,7 @@ def build_site():
     table=''.join('<tr><th scope="row">'+html.escape(label)+'</th>'+''.join(f'<td>{primary["aggregate"][arm][m]["mean"]*100:.2f}</td>' for m in ['clean_em','attack_em','attack_target_hit'])+'</tr>' for arm,label in arm_names.items())
     template=(ROOT/'templates/index.html').read_text()
     script=json.dumps(payload,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
-    for token,value in {'@@STUDY_DATA@@':script,'@@HERO_COMPARISON@@':hero,'@@ALL_CHARTS@@':charts,'@@ALL_SEEDS@@':seeds,'@@ALL_OUTCOMES@@':outcomes,'@@ALL_CASES@@':case_panels,'@@RESULT_ROWS@@':table}.items():template=template.replace(token,value)
+    for token,value in {'@@STUDY_DATA@@':script,'@@HERO_COMPARISON@@':hero,'@@ALL_CHARTS@@':charts,'@@ALL_SEEDS@@':seeds,'@@ALL_OUTCOMES@@':outcomes,'@@ALL_CASES@@':case_panels,'@@RESULT_ROWS@@':table,'@@DEVELOPMENT@@':development_section()}.items():template=template.replace(token,value)
     assert '@@' not in template
     (DOCS/'index.html').write_text(template)
     (DOCS/'citation.bib').write_text('''@misc{lu2026attackresistance,
