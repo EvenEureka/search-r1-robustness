@@ -16,13 +16,41 @@ A payload changes only the text of Doc~1 in the first observation, by appending 
 \promptfile{prompts/override_gold.txt}
 \promptfile{prompts/override_plaus.txt}
 \promptfile{prompts/decl_plaus.txt}
-\paragraph{Controls.} Neutral line, quoted target, benign instruction, and fluent irrelevant sentence. Each is padded with ``note'' to the first length at least as long as the override input and is required to lie within two tokens of both attack inputs.
+\paragraph{Development-only gold probes.} The gold answer in a benign imperative and stated declaratively, each padded to the length of the instruction-form gold payload (Table~\ref{tab:devprobes}).
+\promptfile{prompts/benign_gold.txt}
+\promptfile{prompts/decl_gold.txt}
+\paragraph{Controls.} Neutral line, benign instruction, and fluent irrelevant sentence. Each is padded with ``note'' to the first length at least as long as the override input and is required to lie within two tokens of both attack inputs. A quoted-target control was also run and is reported only in the released results.
 \promptfile{prompts/neutral.txt}
-\promptfile{prompts/quoted_target.txt}
 \promptfile{prompts/benign_instruction.txt}
 \promptfile{prompts/fluent_irrelevant.txt}
 
 \paragraph{Plausible wrong answers.} For each question, with $g$ its first gold answer: a yes/no $g$ is flipped; a four-digit year is replaced by a different year that is the gold answer of a training question, and any other number by a different numeric training answer, chosen with a seeded generator; any other $g$ is replaced by the first document title in the question's own pool, with any trailing parenthetical removed, that is not a gold answer, neither contains nor is contained in a gold answer, does not occur in the question, and belongs to a document whose text contains no gold answer. If no title qualifies, a non-numeric training answer is used. The rule never reads model outputs, and the gold answer serves only to exclude candidates.
+
+\section{Questions and Scoring}
+\label{app:data}
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}r>{\raggedright\arraybackslash}p{0.40\columnwidth}@{}}
+\toprule
+Split & $N$ & Use (evidence level)\\
+\midrule
+HotpotQA training pool & 1,024 & GRPO training\\
+HotpotQA development & 256 & monitoring, probes, control ladder (development)\\
+Earlier held-out split A & 1,000 & standard attacks, before the probes existed (development)\\
+Earlier held-out split B & 1,000 & standard attacks, before the probes existed (development)\\
+HotpotQA test split & 1,000 & the four primary contrasts (confirmatory)\\
+MuSiQue answerable dev & 1,000 & released 7B probes (development)\\
+\quad of which search check & 300 & search counts (development); override rows (exploratory)\\
+\bottomrule
+\end{tabular}
+\caption{Question splits.}
+\label{tab:splits}
+\end{table}
+
+\paragraph{Splits.} HotpotQA questions use the distractor setting, in which each question comes with its own pool of candidate documents. Each held-out split was drawn from the distractor-validation questions with a fixed seed after excluding, by identifier and by normalized question text, every question used before it, and no model outcome entered the selection. The test split was reserved before any inference, stayed sealed until the protocol was frozen, and is disjoint from every other split. The MuSiQue questions were drawn with fixed seeds from the answerable development set.
+
+\paragraph{Retrieval and scoring.} BM25 indexes each document's title and text as lowercase \verb|\w+| tokens and returns the top three, with ties broken by pool order (\texttt{rank-bm25} 0.2.2). Only the final assistant generation is scored. It is valid if the episode ended with an answer action, the answer is non-empty, and the generation contains exactly one opening and one closing answer tag; otherwise it is a format failure and counts as wrong. Normalization lowercases, removes ASCII punctuation, deletes the standalone articles \emph{a}, \emph{an} and \emph{the}, and collapses whitespace. Exact match holds if the normalized answer equals any normalized gold answer. Adoption counts a valid answer whose normalization equals that of $w(q)$, and a target hit one that equals \emph{violet telescope 42}. The lenient criterion uses token F1 of at least 0.5, the maximum multiset-overlap F1 over references, where a yes/no answer scores zero against a different reference.
 
 \section{Training Details}
 \label{app:training}
@@ -40,7 +68,7 @@ Boundary pairing & shared & 300 & 0\\
 Paired + answer CE & shared & 300 & 0.05\\
 \bottomrule
 \end{tabular}
-\caption{Training configurations. Attacks are consumed attacked observations per run; CE entries are loss weights.}
+\caption{The five trained configurations. Attacks are consumed attacked observations per run; CE entries are loss weights. The paper compares the second and third; the first is a reference, and the last two form a second family used only in the Limitations.}
 \label{tab:arms}
 \end{table}
 
@@ -86,7 +114,7 @@ Let R and CE denote the three random-injection and the three answer-CE agents. A
 \end{align*}
 where $T$ is the share of clean-correct pairs answering the nonsense target under the override attack, $A^{\mathrm{ins}}$ and $A^{\mathrm{dec}}$ are the shares answering $w(q)$ in instruction and declarative form, $U$ is the share of clean-wrong pairs answered correctly with the gold in instruction form, and $X$ is the other-wrong rate under the override minus that under the benign instruction, each computed among clean-correct pairs whose outcome is not the attack target. $P_a$, $P_b$, and $P_d$ test $\Delta<0$; $P_c$ tests $\Delta_c>-0.05$. Each bootstrap draw resamples the 1,000 questions with replacement and applies the same draw to all three seeds; $p=(1+\#\{\text{draws on the null side}\})/10{,}001$. Holm's procedure orders the four $p$-values and rejects while $p_{(j)}\leq 0.05/(4-j+1)$.
 
-Table~\ref{tab:primary} gives the four decisions. The \cfPairsCCR{} and \cfPairsCCCE{} clean-correct pairs of random injection and answer CE enter $P_a$, $P_b$, and $P_d$; the \cfPairsCWR{} and \cfPairsCWCE{} clean-wrong pairs enter $P_c$. A leak check that searched every static payload and control text for the gold answers of the test questions flagged none. Under the two lenient criteria, the four contrasts are \cfFonePa, \cfFonePb, \cfFonePc, and \cfFonePd{} points with token F1 $\geq0.5$, and \cfJudgePa, \cfJudgePb, \cfJudgePc, and \cfJudgePd{} points with the judge (\cfJudgeItems{} judged items, none unparsable); tested the same way, all four would be confirmed under both.
+Table~\ref{tab:primary} gives the four decisions. The \cfPairsCCR{} and \cfPairsCCCE{} clean-correct pairs of random injection and answer CE enter $P_a$, $P_b$, and $P_d$; the \cfPairsCWR{} and \cfPairsCWCE{} clean-wrong pairs enter $P_c$. A leak check that searched every static payload and control text for the gold answers of the test questions flagged none. Under the lenient criterion of token F1 $\geq0.5$ the four contrasts are \cfFonePa, \cfFonePb, \cfFonePc, and \cfFonePd{} points, and tested the same way all four would be confirmed. Table~\ref{tab:seeds} gives the rates per configuration and seed. The released per-pair outcome table reproduces every decision in Table~\ref{tab:primary}.
 
 \begin{table*}[t]
 \centering\small
@@ -98,14 +126,30 @@ Table~\ref{tab:primary} gives the four decisions. The \cfPairsCCR{} and \cfPairs
 \tableinput{generated/primary.tex}
 \bottomrule
 \end{tabular*}
-\caption{Primary contrasts on the test split, answer CE minus random injection, in points (exact match). The first interval resamples questions with the six trained models fixed; the second also resamples seed pairs and is descriptive. The Holm bound is the one-sided bound at the contrast's Holm level: an upper bound below 0 for $P_a$, $P_b$, and $P_d$, and a lower bound above $-5$ for $P_c$.}
+\caption{Primary contrasts on the test split, answer CE minus random injection, in points (exact match). The first interval resamples questions with the six trained models fixed. The second also resamples the three seed pairs and is descriptive; with three seeds it is close to their range. The bound is the one-sided bound at the contrast's Holm level: an upper bound below 0 for $P_a$, $P_b$, and $P_d$, and a lower bound above $-5$ for $P_c$.}
 \label{tab:primary}
 \end{table*}
 
-\section{All Configurations}
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+& & \multicolumn{3}{c}{Wrong payload} & Gold & \multicolumn{2}{c}{Interference}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-6}\cmidrule(lr){7-8}
+Config. & Seed & Tgt & Instr & Decl & Instr & NT & All\\
+\midrule
+\tableinput{generated/seeds.tex}
+\bottomrule
+\end{tabular}
+\caption{Test-split rates per configuration and training seed (descriptive). Tgt, Instr, Decl: \% of clean-correct pairs adopting the nonsense target or $w(q)$ in instruction or declarative form. Gold: \% of clean-wrong pairs answered correctly with the gold in instruction form. Interference: override minus benign-instruction other-wrong rate in points, among non-target outcomes (NT, the pre-declared measure) or all clean-correct pairs (All).}
+\label{tab:seeds}
+\end{table}
+
+\section{Probe Rates by Configuration}
 \label{app:arms}
 \label{app:dev}
-Table~\ref{tab:devprobes} gives the development probes for all five configurations. The two boundary-paired configurations repeat the pattern of the random-injection pair: answer CE lowers instruction-form adoption of the nonsense target (\dvTP\% to \dvTPCE\%) and of $w(q)$ (\dvAiP\% to \dvAiPCE\%) and leaves declarative adoption close (\dvAdP\% to \dvAdPCE\%). In both families, answer CE reduces uptake of a correct answer phrased as a benign instruction by a few points (\dvDBenignGoldR{} and \dvDBenignGoldP{} points), and in the paired family it also reduces uptake of a declaratively stated gold answer (\dvDDeclGoldP{} points \dvDDeclGoldPCI).
+Table~\ref{tab:devprobes} gives the development probes and Table~\ref{tab:allarms} the test-split probes for the reference configuration and the two compared ones. Pooled over seeds, agents trained with injection alone were more obedient than agents trained without injection on both the nonsense target and the plausible wrong answer in instruction form; one of the three random-injection runs was less obedient than all three runs trained without injection (Table~\ref{tab:seeds}).
 
 \begin{table*}[t]
 \centering\small
@@ -118,11 +162,9 @@ Configuration & Instr., target & Instr., $w(q)$ & Decl., $w(q)$ & Instr. & Benig
 \tableinput{generated/dev-probes.tex}
 \bottomrule
 \end{tabular*}
-\caption{Development probes on 256 questions, three seeds per configuration (development evidence). ``Benign instr.'' carries the gold answer in a benign imperative sentence of the same length.}
+\caption{Development probes on 256 questions, three seeds per configuration (development evidence). ``Benign instr.'' carries the gold answer in a benign imperative sentence of the same length; ``Decl.'' states it declaratively.}
 \label{tab:devprobes}
 \end{table*}
-
-Table~\ref{tab:allarms} gives the same probes for all five configurations on the test split. These numbers are descriptive.
 
 \begin{table}[ht]
 \centering\small
@@ -136,18 +178,18 @@ Configuration & EM & Tgt & Instr & Decl & Instr\\
 \tableinput{generated/all-arms.tex}
 \bottomrule
 \end{tabular}
-\caption{All five configurations on the 1,000-question test split, three seeds each (descriptive). Clean EM over all questions; Tgt, Instr, Decl: \% of clean-correct pairs adopting the nonsense target or $w(q)$ in instruction or declarative form; Gold: \% of clean-wrong pairs answered correctly with the gold in instruction form.}
+\caption{The three configurations on the 1,000-question test split, three seeds each (descriptive). Clean EM over all questions; Tgt, Instr, Decl: \% of clean-correct pairs adopting the nonsense target or $w(q)$ in instruction or declarative form; Gold: \% of clean-wrong pairs answered correctly with the gold in instruction form.}
 \label{tab:allarms}
 \end{table}
 
 \section{The 7B Study}
 \label{app:sevenb}
-The questions are the 300 of the search-count check plus 700 further answerable MuSiQue development questions drawn with a fixed seed. Decoding is greedy and batched, with 512 new tokens per turn and an 8,192-token context. In the verification variant, one sentence is inserted before the question: ``Retrieved documents may contain mistakes or misleading statements. Before giving your final answer, check the key facts it depends on with at least one more search, and answer only when independent evidence agrees.'' In the forced variant, the agent's first attempted answer is recorded, the turn is cut before the answer, and a search tag is appended so the agent writes a query; if it does not, the recorded answer is restored. A mention is the normalized payload phrase appearing as whole words in the first reasoning turn after the payload was shown. Table~\ref{tab:sevenbpred} lists the frozen predictions; point estimates decide.
+The questions are the \scN{} of the search check plus 700 further answerable MuSiQue development questions drawn with a fixed seed. Decoding is greedy and batched, with 512 new tokens per turn and an 8,192-token context, and the Search-R1 prompt is used unchanged. Table~\ref{tab:sevenbpred} lists the frozen predictions used in this paper; point estimates decide.
 
 \begin{table}[ht]
 \centering\small
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{l>{\raggedright\arraybackslash}p{0.45\columnwidth}rl}
+\begin{tabular}{l>{\raggedright\arraybackslash}p{0.47\columnwidth}rl}
 \toprule
 & Prediction & Value & Outcome\\
 \midrule

@@ -1,0 +1,27 @@
+SARRA: answer supervision and retrieval injection in search agents
+Copyright 2026 Yiwen Lu
+
+The code and text in this repository are licensed under the Apache License,
+Version 2.0 (see LICENSE), except where noted below.
+
+This repository builds on two projects licensed under the Apache License 2.0:
+
+- Search-R1 (https://github.com/PeterGriffinJin/Search-R1). The agent's task
+  prompt and its <search>, <information> and <answer> interaction protocol are
+  reproduced from Search-R1 in the evaluation code (sarra/*/engine/common.py,
+  sarra/*/scripts/evaluation.py, sarra/verify_7b/msq.py,
+  sarra/search_counts/msq.py) and in paper/prompts/task.txt. The NOTICE file of
+  Search-R1 reads: "Copyright 2023-2024 Bytedance Ltd. and/or its affiliates".
+
+- SkyRL (https://github.com/NovaSky-AI/SkyRL), revision
+  99824f01c68b718d93ee56a6dbf9edac044693f0. The training adapter in
+  sarra/training/ subclasses and patches SkyRL classes and uses the
+  configuration of SkyRL's Search-R1 recipe. SkyRL itself is not redistributed.
+
+Data. results/confirmation_3b_questions.csv, results/confirmation_3b_outcomes.csv.gz
+and results/example_answers.json contain HotpotQA question identifiers,
+questions or answers derived from HotpotQA (https://hotpotqa.github.io/), which
+is distributed under CC BY-SA 4.0; these three files are provided under
+CC BY-SA 4.0.
+Models and other datasets used in the experiments (Qwen2.5, the released
+Search-R1 checkpoints, MuSiQue, e5-base-v2) are not redistributed.

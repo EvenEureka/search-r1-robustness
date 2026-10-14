@@ -4,7 +4,7 @@ Reads the validated traces of the 15 v1f exports on development256 (runs/primary
 seven conditions), re-scores every record with the hash-checked frozen scorer (executed from memory), and writes
 analysis/primary.{json,txt} and analysis/predictions_primary.json.
 
-Categories (frozen, as analyze_corrected_posthoc.py): correct (EM), target (exact target), invalid (format failure),
+Categories (frozen, the same as in the earlier within-model analysis): correct (EM), target (exact target), invalid (format failure),
 other_wrong (everything else). A descriptive lenient variant counts a valid non-target answer with token F1 >= 0.5 as correct.
 
 Within-model estimator: for each export, the seed-question pairs it answers correctly under the clean condition; the

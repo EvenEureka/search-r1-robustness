@@ -5,7 +5,7 @@
    "path": "README.md",
    "source": null,
    "verbatim": false,
-   "sha256": "a1639a8beb50cf4b665e583de79365ee43ef94ce08b9ba9e98a0bde6f3dceeb0",
+   "sha256": "53d7f4917d04dfa8eed65678c15be30c161d8e800a2ea89aa5d349e9ea1979de",
    "frozen_sha256": null
   },
   {
@@ -19,7 +19,7 @@
    "path": "benign_controls/engine/common.py",
    "source": "benign_controls_v1/source/engine/common.py",
    "verbatim": false,
-   "sha256": "bd03d2ad62005960eabe68fecbbd8fa9bd6f9436f791ef1cf793121aafc2a06d",
+   "sha256": "d668adc629114eef11bbaabd33ec12f213a37296aa77fdd06de165acd8badaed",
    "frozen_sha256": "b4322d2e4d4c25241371e6bb98124d9ba7e7d2a64c8167391b88dd83e922b90c"
   },
   {
@@ -61,7 +61,7 @@
    "path": "benign_controls/scripts/analyze_controls.py",
    "source": "benign_controls_v1/source/scripts/analyze_controls.py",
    "verbatim": false,
-   "sha256": "4920c08056ba5793fdcc868b10c8ff67b72ec52273197a25627c425bb9f89aa1",
+   "sha256": "f105c29bedf16fe800149ae3e3cb8b1ab5e7707ea6b3fa0d21e3564bae97e0b9",
    "frozen_sha256": "e463ad92b5da6a11ab53377f8af8524dfbff457f6b67b4851efeb8a6c708840a"
   },
   {
@@ -131,7 +131,7 @@
    "path": "confirmation/engine/common.py",
    "source": "confirmation_v2/source/engine/common.py",
    "verbatim": false,
-   "sha256": "bd03d2ad62005960eabe68fecbbd8fa9bd6f9436f791ef1cf793121aafc2a06d",
+   "sha256": "d668adc629114eef11bbaabd33ec12f213a37296aa77fdd06de165acd8badaed",
    "frozen_sha256": "b4322d2e4d4c25241371e6bb98124d9ba7e7d2a64c8167391b88dd83e922b90c"
   },
   {
@@ -145,7 +145,7 @@
    "path": "confirmation/protocol_public.json",
    "source": "confirmation_v2/protocol.json",
    "verbatim": false,
-   "sha256": "e4d337772fe20609cc283077ec6c32bba45d1db976ed31eafa84395f5d6cf0f0",
+   "sha256": "aad2c6712cd3e7475bf32e6aa6d146141a3f72471f01b13f0ad282f26d60ccd4",
    "frozen_sha256": "9f2337fa656ebadda7fac838c9317d7bc51196630a23debb0fe14c51a08c3350"
   },
   {
@@ -240,6 +240,13 @@
    "frozen_sha256": "0bf4f689d9bafc9e752411d21318232ff69efbe8f57abb562fe96227b45519f2"
   },
   {
+   "path": "confirmation/scripts/reanalyze_outcomes.py",
+   "source": null,
+   "verbatim": false,
+   "sha256": "0a5fbd15971b2e1c1867af9c988614a9a5a8ddbdc23648395f1a59a3570fe644",
+   "frozen_sha256": null
+  },
+  {
    "path": "confirmation/scripts/run_e3_job.py",
    "source": "confirmation_v2/source/scripts/run_e3_job.py",
    "verbatim": false,
@@ -268,69 +275,6 @@
    "frozen_sha256": "d1ddfaf3a4ae8d429f58e1ab76ab9c14628f578958ca863c26daebedb6c0a0de"
   },
   {
-   "path": "killcheck/README.md",
-   "source": null,
-   "verbatim": false,
-   "sha256": "b04dd9f2bc3372e20f93c45de2e5f8533ecf43ddba0498aa542cda0160a76db8",
-   "frozen_sha256": null
-  },
-  {
-   "path": "killcheck/analyze.py",
-   "source": "multisearch_killcheck_v1/source/analyze.py",
-   "verbatim": true,
-   "sha256": "5e2a7e7be8bc4b825a8582406ef440a3957cbeea82f52c00c2a4d29b2f49e75a",
-   "frozen_sha256": "5e2a7e7be8bc4b825a8582406ef440a3957cbeea82f52c00c2a4d29b2f49e75a"
-  },
-  {
-   "path": "killcheck/ft1a_cpu.py",
-   "source": "multisearch_killcheck_v1/source/ft1a_cpu.py",
-   "verbatim": false,
-   "sha256": "a0c1296d920bee91cbb5913e3c59a00b604702e9ae30670bb2901d329aaea0a2",
-   "frozen_sha256": "3b36cbf0523a319658ada4e03af4e82703908fd73992dd69370f29faf6b3bae5"
-  },
-  {
-   "path": "killcheck/ft1b_cpu.py",
-   "source": "multisearch_killcheck_v1/source/ft1b_cpu.py",
-   "verbatim": false,
-   "sha256": "5cefaa3cc455e16add18583da0e3d4e1595712aa9b6511ad3a803fe5e1dc684a",
-   "frozen_sha256": "19c2dec69c8196e4e67500b399171dd9421e9eef916af91afdd104ae3094dcb0"
-  },
-  {
-   "path": "killcheck/msq.py",
-   "source": "multisearch_killcheck_v1/source/msq.py",
-   "verbatim": false,
-   "sha256": "adb6a4c6ebe04293d6a4d993260af1ba7d1d48dd3fe1a0dc73a5de491a535d15",
-   "frozen_sha256": "6631947e7db2e878d1b6bfd2c09194bb33c5a9d61add39f5732498dfddfd124c"
-  },
-  {
-   "path": "killcheck/protocol_public.json",
-   "source": "multisearch_killcheck_v1/protocol.json",
-   "verbatim": false,
-   "sha256": "b2c5d0145cf3a927ebb83e26eb27b127b31625a2ec17dd97318484e29d2d8b5b",
-   "frozen_sha256": "9fb79e773cd3af454f598590945034acb51382356c66f5aa3965af06f46e27af"
-  },
-  {
-   "path": "killcheck/run_job.py",
-   "source": "multisearch_killcheck_v1/source/run_job.py",
-   "verbatim": false,
-   "sha256": "93f868282d29ca7ce9c5fdeac2994ae6449eb5985f37e11b9aa0ae4bf31abe0f",
-   "frozen_sha256": "9c009f7889958887b0cfbde0ac540d11418eae82b7f531b55dc9ea542230a934"
-  },
-  {
-   "path": "killcheck/test_msq.py",
-   "source": "multisearch_killcheck_v1/source/test_msq.py",
-   "verbatim": false,
-   "sha256": "f6047473f7ca02b1759e591a4cbca2da56b256fed557a55794cfa2943917f677",
-   "frozen_sha256": "d71bc73a2e4e1cf7e9483f809603379625e03d5f0bf9baf645a9035d45a55845"
-  },
-  {
-   "path": "killcheck/worker.py",
-   "source": "multisearch_killcheck_v1/source/worker.py",
-   "verbatim": false,
-   "sha256": "c4b103d669dd7d9ec96d92c72a1657a825da6681e4ad1644c3f379f9f9db2cc2",
-   "frozen_sha256": "bcbc5eb02d51b9ffc3b644d0430ab03a39c18aa5ebf6cce15385d06867e2e4b4"
-  },
-  {
    "path": "other_wrong/README.md",
    "source": null,
    "verbatim": false,
@@ -355,7 +299,7 @@
    "path": "other_wrong/scripts/analyze_errors.py",
    "source": "other_wrong_analysis_v1/source/scripts/analyze_errors.py",
    "verbatim": false,
-   "sha256": "d430195658a26127569992d5d17400e112088c8c99f98f2ee496a203eab6b8fe",
+   "sha256": "a3da77a0f2fb3642bbfb983caebd6c6bb24535e521d261f1e86017dbf238a128",
    "frozen_sha256": "215c842ccd59449054f9ee36a00ed26195db02133a37a593a025989786e3071b"
   },
   {
@@ -425,7 +369,7 @@
    "path": "probes/gold/engine/common.py",
    "source": "suppression_signature_v1/source/engine/common.py",
    "verbatim": false,
-   "sha256": "bd03d2ad62005960eabe68fecbbd8fa9bd6f9436f791ef1cf793121aafc2a06d",
+   "sha256": "d668adc629114eef11bbaabd33ec12f213a37296aa77fdd06de165acd8badaed",
    "frozen_sha256": "b4322d2e4d4c25241371e6bb98124d9ba7e7d2a64c8167391b88dd83e922b90c"
   },
   {
@@ -516,7 +460,7 @@
    "path": "probes/plausible/engine/common.py",
    "source": "suppression_signature_v1c/source/engine/common.py",
    "verbatim": false,
-   "sha256": "bd03d2ad62005960eabe68fecbbd8fa9bd6f9436f791ef1cf793121aafc2a06d",
+   "sha256": "d668adc629114eef11bbaabd33ec12f213a37296aa77fdd06de165acd8badaed",
    "frozen_sha256": "b4322d2e4d4c25241371e6bb98124d9ba7e7d2a64c8167391b88dd83e922b90c"
   },
   {
@@ -595,6 +539,69 @@
    "verbatim": false,
    "sha256": "9e88b17cf19da4abfb45d56e9ff707cf5af65d85c182efbf3f8c7dae988a7762",
    "frozen_sha256": "7875348bd2c7a8acc0d0041641a3851696aa44e94466c2c34bcc53bc62f82869"
+  },
+  {
+   "path": "search_counts/README.md",
+   "source": null,
+   "verbatim": false,
+   "sha256": "64a28bf3715ec3f8dd57138a2953fd0f8bc6a54a0625ba891ea7005068bc7f5f",
+   "frozen_sha256": null
+  },
+  {
+   "path": "search_counts/analyze.py",
+   "source": "multisearch_killcheck_v1/source/analyze.py",
+   "verbatim": true,
+   "sha256": "5e2a7e7be8bc4b825a8582406ef440a3957cbeea82f52c00c2a4d29b2f49e75a",
+   "frozen_sha256": "5e2a7e7be8bc4b825a8582406ef440a3957cbeea82f52c00c2a4d29b2f49e75a"
+  },
+  {
+   "path": "search_counts/ft1a_cpu.py",
+   "source": "multisearch_killcheck_v1/source/ft1a_cpu.py",
+   "verbatim": false,
+   "sha256": "a0c1296d920bee91cbb5913e3c59a00b604702e9ae30670bb2901d329aaea0a2",
+   "frozen_sha256": "3b36cbf0523a319658ada4e03af4e82703908fd73992dd69370f29faf6b3bae5"
+  },
+  {
+   "path": "search_counts/ft1b_cpu.py",
+   "source": "multisearch_killcheck_v1/source/ft1b_cpu.py",
+   "verbatim": false,
+   "sha256": "5cefaa3cc455e16add18583da0e3d4e1595712aa9b6511ad3a803fe5e1dc684a",
+   "frozen_sha256": "19c2dec69c8196e4e67500b399171dd9421e9eef916af91afdd104ae3094dcb0"
+  },
+  {
+   "path": "search_counts/msq.py",
+   "source": "multisearch_killcheck_v1/source/msq.py",
+   "verbatim": false,
+   "sha256": "adb6a4c6ebe04293d6a4d993260af1ba7d1d48dd3fe1a0dc73a5de491a535d15",
+   "frozen_sha256": "6631947e7db2e878d1b6bfd2c09194bb33c5a9d61add39f5732498dfddfd124c"
+  },
+  {
+   "path": "search_counts/protocol_public.json",
+   "source": "multisearch_killcheck_v1/protocol.json",
+   "verbatim": false,
+   "sha256": "b2c5d0145cf3a927ebb83e26eb27b127b31625a2ec17dd97318484e29d2d8b5b",
+   "frozen_sha256": "9fb79e773cd3af454f598590945034acb51382356c66f5aa3965af06f46e27af"
+  },
+  {
+   "path": "search_counts/run_job.py",
+   "source": "multisearch_killcheck_v1/source/run_job.py",
+   "verbatim": false,
+   "sha256": "93f868282d29ca7ce9c5fdeac2994ae6449eb5985f37e11b9aa0ae4bf31abe0f",
+   "frozen_sha256": "9c009f7889958887b0cfbde0ac540d11418eae82b7f531b55dc9ea542230a934"
+  },
+  {
+   "path": "search_counts/test_msq.py",
+   "source": "multisearch_killcheck_v1/source/test_msq.py",
+   "verbatim": false,
+   "sha256": "f6047473f7ca02b1759e591a4cbca2da56b256fed557a55794cfa2943917f677",
+   "frozen_sha256": "d71bc73a2e4e1cf7e9483f809603379625e03d5f0bf9baf645a9035d45a55845"
+  },
+  {
+   "path": "search_counts/worker.py",
+   "source": "multisearch_killcheck_v1/source/worker.py",
+   "verbatim": false,
+   "sha256": "c4b103d669dd7d9ec96d92c72a1657a825da6681e4ad1644c3f379f9f9db2cc2",
+   "frozen_sha256": "bcbc5eb02d51b9ffc3b644d0430ab03a39c18aa5ebf6cce15385d06867e2e4b4"
   },
   {
    "path": "training/README.md",
@@ -753,8 +760,8 @@
   {
    "path": "training/training_adapter/search_env.py",
    "source": "quota_rerun_3b_v1f/source/training_adapter/search_env.py",
-   "verbatim": true,
-   "sha256": "b744aec1ec3b7636dad65352406023939bcf7b6272c46477b7663986e92883d9",
+   "verbatim": false,
+   "sha256": "c151f59e55a4ac5870636961e6ec0baa5b90e872fd262864f79195595c147a2a",
    "frozen_sha256": "b744aec1ec3b7636dad65352406023939bcf7b6272c46477b7663986e92883d9"
   },
   {
@@ -789,7 +796,7 @@
    "path": "verify_7b/README.md",
    "source": null,
    "verbatim": false,
-   "sha256": "c1b1f57d909d3fc2105609ce11f6dffa9538136c1550ad7901a1c993a9a2e7f8",
+   "sha256": "a276a6f084f474360df5adc6a4530a32e37c1b2e778aeb22f383edc15722b930",
    "frozen_sha256": null
   },
   {
@@ -824,14 +831,14 @@
    "path": "verify_7b/prepare_b1.py",
    "source": "verify_7b_musique_v1/source/prepare_b1.py",
    "verbatim": false,
-   "sha256": "02ddf3b479c37be0e0afb49426a41c9b68659b7a6ced2e3f4ffec4e9ebd6b754",
+   "sha256": "14664db19798f41ceaac9e6c18dcfa80e03b35f48f161f27148d92c0a995e5bf",
    "frozen_sha256": "1b9805b247d879f3a1c208624f85049240ae9d2b7a71bf52fc909674fa6b0c01"
   },
   {
    "path": "verify_7b/protocol_public.json",
    "source": "verify_7b_musique_v1/protocol.json",
    "verbatim": false,
-   "sha256": "d6da3d8be48fc89499686264d4da035c34e5199808c45cb63e3e2a1a49fbb83a",
+   "sha256": "b60ee03b5bdafb9f6281948468e1ceffd7ce9f1b1bcdbdf817ea8cc0b11e518a",
    "frozen_sha256": "084d05be628c369960f5a8af97582a6bbcf5721d5c3cdab32a519c6192ca26b8"
   },
   {

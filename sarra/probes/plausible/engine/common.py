@@ -1,4 +1,4 @@
-"""Versioned experiment utilities; previous pilot files remain unchanged."""
+"""Shared helpers: Search-R1 task prompt, per-question BM25 retrieval, episode loop and scoring wrappers."""
 import copy
 import hashlib
 import json

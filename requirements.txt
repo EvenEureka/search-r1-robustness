@@ -1,3 +1,4 @@
-# Rebuild the figure, tables and number macros from results/*.json (paper/make_assets.py).
+# Rebuild the figure, tables and number macros (paper/make_assets.py) and re-run the
+# confirmatory analysis from the released outcome table (sarra/confirmation/scripts/reanalyze_outcomes.py).
 numpy>=1.26
 matplotlib>=3.8

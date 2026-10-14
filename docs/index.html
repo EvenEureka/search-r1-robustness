@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Answer Supervision Gates Instructions | Yiwen Lu</title>
+<title>Resisting Wrong Instructions | Yiwen Lu</title>
 <meta name="description" content="What does training against retrieval injection teach a search agent? A manuscript, code and results by Yiwen Lu (University of Notre Dame).">
 <style>
 :root {
@@ -55,7 +55,8 @@ figure img {
 figcaption { color: var(--ink-2); font-size: 0.9rem; margin-top: 8px; }
 ol.findings { padding-left: 1.2em; margin: 0; }
 ol.findings li { margin: 0 0 14px; }
-.note { color: var(--ink-2); font-size: 0.92rem; }
+.answer { font-size: 1.05rem; }
+.note { color: var(--ink-2); font-size: 0.92rem; margin-top: 16px; }
 pre {
   background: var(--surface); border: 1px solid var(--rule); border-radius: 6px;
   padding: 12px; overflow-x: auto; font-size: 0.8rem; line-height: 1.45;
@@ -68,8 +69,8 @@ a { color: var(--accent-ink); }
 <body>
 <main>
 <header>
-  <h1>Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent</h1>
-  <p class="byline">Yiwen Lu, University of Notre Dame</p>
+  <h1>Answer Supervision Teaches a Search Agent to Resist Wrong Instructions, Far More Than Wrong Claims</h1>
+  <p class="byline">Yiwen Lu, University of Notre Dame · <a href="mailto:ylu37@nd.edu">ylu37@nd.edu</a></p>
   <p class="status">Manuscript, 2026</p>
   <nav class="links" aria-label="Resources">
     <a href="sarra.pdf">PDF</a>
@@ -79,25 +80,30 @@ a { color: var(--accent-ink); }
 </header>
 
 <h2>Question</h2>
-<p>Defenses against retrieval injection are judged by two numbers: how often the attack succeeds and how much clean accuracy the defense costs. An agent that has learned to ignore instructions inside documents and an agent that checks what documents claim would both score well on these numbers. They differ on a wrong answer stated as a plain fact, and a third kind of defense, one that discounts all inserted text, would also refuse a correct answer delivered as an instruction. Which of these does training against injection teach a reinforcement-learned search agent?</p>
-
-<h2>Core result</h2>
-<figure>
-  <a href="assets/gate.svg" aria-label="Open the figure at full size"><img src="assets/gate.png" width="1501" height="610" alt="Bar chart. 3B agents on the test split: with answer CE, adoption of the attack target falls from 32.0% to 1.6%, adoption of a plausible wrong answer in instruction form from 68.3% to 33.5%, and in declarative form from 20.7% to 17.7%; use of a correct answer in instruction form is 92.1% without and 88.9% with answer CE. Released 7B agent: 1.3%, 7.6%, 1.7% and 58.9%."></a>
-  <figcaption>Left: 3B single-search agents trained with injection, with and without an answer cross-entropy loss, on 1,000 test questions; the middle column is the difference with a 95% interval. Right: the released Search-R1 7B agent, which searches several times per question, on 1,000 MuSiQue questions (development evidence). Wrong payloads are scored on answers the agent gets right without them, the gold payload on questions it gets wrong without it. Tap the figure to open it at full size.</figcaption>
-</figure>
+<p>Defenses against retrieval injection are judged by two numbers: how often the attack succeeds and how much clean accuracy the defense costs. An agent that has learned to distrust instructions inside documents and an agent that checks what documents claim would both score well on these numbers. They differ on a wrong answer stated as a plain fact, and a third kind of defense, one that discounts all inserted text, would also refuse a correct answer delivered as an instruction. Which of these does training against injection teach a reinforcement-learned search agent?</p>
+<p class="answer"><strong>Answer.</strong> Training with a loss on the correct answer does not make a single-search agent ignore instructions in retrieved text. It makes the agent resist instructions that push a wrong answer, halving adoption of a plausible one, while it keeps following ones that push the right answer, and it barely changes how often the agent adopts the same wrong answer stated as a fact.</p>
 
 <h2>Findings</h2>
 <ol class="findings">
-  <li><strong>A gate on instructions.</strong> Training with a cross-entropy loss on the correct answer cut adoption of the attack target from 32.0% to 1.6%, and of a plausible wrong answer delivered as an instruction from 68.3% to 33.5%. The same wrong answer stated as a fact went from 20.7% to 17.7%. All four pre-specified contrasts were confirmed on 1,000 unseen questions.</li>
-  <li><strong>Correct content mostly kept.</strong> A correct answer delivered as an instruction was still used on 88.9% of the questions the agent otherwise missed, against 92.1% without the loss, a cost of 3.2 points inside the pre-set 5-point margin. How strong a gate a training run learned varied widely across seeds.</li>
-  <li><strong>A multi-search agent is hard to move either way.</strong> The released Search-R1 7B agent adopted a wrong answer stated as a fact on 1.7% of the questions it otherwise got right, and the instruction form added only 5.9 points. This is development evidence from a released model with one inserted passage.</li>
+  <li><strong>Wrong instructions resisted, right ones still followed.</strong> Training with a cross-entropy loss on the correct answer cut adoption of a plausible wrong answer delivered as an instruction from 68.3% to 33.5%, and of the attack target from 32.0% to 1.6%. The same override text carrying the correct answer was still followed on 88.9% of the questions the agent otherwise missed, against 92.1% without the loss. Answer CE brought target adoption to 1&ndash;3% in every training seed; agents trained with injection alone ranged from 10% to 59%.</li>
+  <li><strong>Adoption of the same wrong answer stated as a fact barely changes.</strong> Stated declaratively, the plausible wrong answer went from 20.7% to 17.7%, a drop of 3 points next to 35 for the instruction form. All four pre-specified contrasts were confirmed on 1,000 questions that none of the agents had been trained or evaluated on.</li>
+  <li><strong>A multi-search 7B agent is barely moved by either form.</strong> The released Search-R1 7B agent adopted a wrong answer stated as a fact on 1.7% of the questions it otherwise got right, and the instruction form added only 5.9 points.</li>
 </ol>
-<p class="note">The confirmatory claims rest on four contrasts whose analysis protocol was committed by hash before the test split was opened, scored by exact match and corrected for multiple testing. Everything else is labelled development or exploratory in the paper.</p>
+
+<h2>Core result</h2>
+<figure>
+  <a href="assets/gate.svg" aria-label="Open the figure at full size"><picture>
+    <source media="(max-width: 600px)" srcset="assets/gate-narrow.png" width="859" height="1472">
+    <img src="assets/gate.png" width="1392" height="610" alt="Bar chart. 3B agents on the test split: with answer CE, adoption of the attack target falls from 32.0% to 1.6%, adoption of a plausible wrong answer in instruction form from 68.3% to 33.5%, and in declarative form from 20.7% to 17.7%; use of a correct answer in instruction form is 92.1% without and 88.9% with answer CE. Released 7B agent: 1.3%, 7.6%, 1.7% and 58.9%.">
+  </picture></a>
+  <figcaption>Trained single-search agents, with and without an answer cross-entropy loss, on the confirmatory test split, and the released Search-R1 7B agent, which searches several times per question (development evidence). Wrong answers are scored on questions the agent answers correctly without a payload, the correct answer on questions it answers wrongly without one.</figcaption>
+</figure>
+
+<p class="note">The confirmatory claims rest on four contrasts whose analysis protocol was committed by hash before the test split was opened, scored by exact match and corrected for multiple testing. Everything else, including the 7B study of a released model, is labelled development or exploratory in the paper.</p>
 
 <h2 id="cite">Cite</h2>
 <pre><code>@misc{lu2026sarra,
-  title  = {Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent},
+  title  = {Answer Supervision Teaches a Search Agent to Resist Wrong Instructions, Far More Than Wrong Claims},
   author = {Lu, Yiwen},
   year   = {2026},
   note   = {Manuscript},

@@ -1,13 +1,12 @@
-# verify_7b (B1): content channel, instruction channel and recovery in the released Search-R1 7B
+# verify_7b (B1): content channel and instruction channel in the released Search-R1 7B
 
-This inference-only study asks four questions about the released Search-R1 7B on MuSiQue:
+This inference-only study asks three questions about the released Search-R1 7B on MuSiQue:
 
 - Does it adopt a wrong answer stated as a fact (content channel)?
 - Does instruction form add to adoption (instruction channel)?
 - Does it use correct injected content?
-- Does a verification prompt or a forced extra search recover from an adopted payload?
 
-Predictions PB1-1 to PB1-6 are in `protocol_public.json`. Installed name: `studies/verify_7b_musique_v1`.
+Predictions PB1-1 to PB1-3 answer them and are in `protocol_public.json`. The code as run also evaluated two inference-time variants (a verification prompt and a forced extra search) with three further predictions; the manuscript uses only the native variant. Installed name: `studies/verify_7b_musique_v1`.
 
 ## Setup
 
@@ -15,7 +14,7 @@ Predictions PB1-1 to PB1-6 are in `protocol_public.json`. Installed name: `studi
 
 **Corpus and retrieval.** MuSiQue-pool: the 101,962 unique paragraphs of MuSiQue answerable v1.0 train and dev. Retrieval is e5-base-v2, top 3.
 
-**Questions.** D1000 is S300 (the kill-check questions) plus 700 further answerable dev questions. The smoke run uses the first 8 answerable train questions.
+**Questions.** D1000 is S300 (the questions of the search-count study) plus 700 further answerable dev questions. The smoke run uses the first 8 answerable train questions.
 
 **Conditions.** Each payload is appended to retrieved document 1 of the first search:
 
@@ -35,7 +34,7 @@ Predictions PB1-1 to PB1-6 are in `protocol_public.json`. Installed name: `studi
 
 | File | Role |
 | --- | --- |
-| `msq.py` | MuSiQue loading, corpus, S300, BM25 and e5 retrievers, Search-R1 prompt and scorer. Same file as `../killcheck/msq.py`. |
+| `msq.py` | MuSiQue loading, corpus, S300, BM25 and e5 retrievers, Search-R1 prompt and scorer. Same file as `../search_counts/msq.py`. |
 | `b1.py` | Question sets, w(q) for MuSiQue, payloads, variants and record metrics. |
 | `b1_loop.py` | Batched episode loop; the model and retriever are passed in. |
 | `worker_b1.py` | One GPU, one shard, all 15 passes. |

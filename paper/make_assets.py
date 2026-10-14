@@ -1,14 +1,14 @@
 """Build the paper's figure, tables and number macros from the result files in results/.
 
 Usage (from the repository root):
-    python paper/make_assets.py                 # needs results/confirmation_3b.json
-    python paper/make_assets.py --preview-dev   # layout preview from development numbers only (not for the paper)
+    python sarra/confirmation/scripts/reanalyze_outcomes.py   # optional: rewrites results/confirmation_3b_reanalysis.json
+    python paper/make_assets.py
 
 Outputs:
-    paper/figures/gate.pdf, docs/assets/gate.png, docs/assets/gate.svg
-    paper/generated/numbers.tex   (\\newcommand macros; every number in the text comes from here)
-    paper/generated/*.tex         (table bodies)
-Only the standard library, numpy and matplotlib are needed. Nothing here reads traces or models.
+    paper/figures/gate.pdf, paper/figures/seeds.pdf, docs/assets/gate.png, docs/assets/gate.svg, docs/assets/gate-narrow.png
+    paper/generated/numbers-dev.tex, paper/generated/numbers-conf.tex   (\\newcommand macros; every number in the text)
+    paper/generated/*.tex                                               (table bodies)
+Only the standard library and matplotlib are needed. Nothing here reads traces or models.
 """
 import argparse
 import json
@@ -23,14 +23,16 @@ RES = ROOT / 'results'
 GEN = ROOT / 'paper' / 'generated'
 FIG = ROOT / 'paper' / 'figures'
 ASSETS = ROOT / 'docs' / 'assets'
+PROTOCOL = ROOT / 'sarra' / 'confirmation' / 'protocol_public.json'
 
 # Colors: slots 1-3 of a categorical palette checked for color-vision-deficiency separation.
 C_R, C_CE, C_7B = '#eb6834', '#2a78d6', '#1baf7a'
 INK, INK2, GRID = '#0b0b0b', '#52514e', '#d9d8d4'
 
-ARM_NAMES = {'clean': 'Clean GRPO', 'random_matched': 'Random injection', 'random_answer': 'Random + answer CE',
-             'paired': 'Boundary pairing', 'paired_answer': 'Paired + answer CE'}
-ARM_ORDER = ['clean', 'random_matched', 'random_answer', 'paired', 'paired_answer']
+ARM_NAMES = {'clean': 'Clean GRPO', 'random_matched': 'Random injection', 'random_answer': 'Random + answer CE'}
+ARM_ORDER = ['clean', 'random_matched', 'random_answer']
+SEEDS = ['20261012', '20261013', '20261014']
+Q = 'question_bootstrap_95pct_interval_fixed_models'
 
 
 def load(name):
@@ -42,14 +44,21 @@ def pct(x, d=1):
 
 
 def pts(x, d=1):
-    v = 100 * x
-    s = f'{v:+.{d}f}'
-    return s.replace('-', '$-$') if s.startswith('-') else s
+    s = f'{100 * x:+.{d}f}'
+    return s.replace('-', '$-$')
+
+
+def num(x, d=1):
+    return f'{100 * x:.{d}f}'.replace('-', '$-$')
 
 
 def ci(lo, hi, d=1):
-    f = lambda v: f'{100 * v:.{d}f}'.replace('-', '$-$')
-    return f'[{f(lo)}, {f(hi)}]'
+    return f'[{num(lo, d)}, {num(hi, d)}]'
+
+
+def seeds(values, signed=False):
+    vals = list(values.values()) if isinstance(values, dict) else list(values)
+    return ', '.join(pts(v) if signed else pct(v) for v in vals)
 
 
 class Macros:
@@ -68,17 +77,16 @@ class Macros:
 def three_b_confirmation():
     c = load('confirmation_3b.json')['report']
     comp, dec = c['primary_components'], c['primary_decisions']
-    q = 'question_bootstrap_95pct_interval_fixed_models'
     v = {
         'T': (comp['P_a']['T_R'], comp['P_a']['T_CE']),
         'Ai': (comp['P_b']['A_R_instruction'], comp['P_b']['A_CE_instruction']),
         'Ad': (comp['P_b']['A_R_declarative'], comp['P_b']['A_CE_declarative']),
         'U': (comp['P_c']['U_R'], comp['P_c']['U_CE']),
-        'dT': (comp['P_a']['delta']['point'], *comp['P_a']['delta'][q]),
-        'dAi': (comp['P_b']['delta_instruction']['point'], *comp['P_b']['delta_instruction'][q]),
-        'dAd': (comp['P_b']['delta_declarative']['point'], *comp['P_b']['delta_declarative'][q]),
-        'dU': (comp['P_c']['delta']['point'], *comp['P_c']['delta'][q]),
-        'source': 'confirmation', 'n': c.get('questions'),
+        'dT': (comp['P_a']['delta']['point'], *comp['P_a']['delta'][Q]),
+        'dAi': (comp['P_b']['delta_instruction']['point'], *comp['P_b']['delta_instruction'][Q]),
+        'dAd': (comp['P_b']['delta_declarative']['point'], *comp['P_b']['delta_declarative'][Q]),
+        'dU': (comp['P_c']['delta']['point'], *comp['P_c']['delta'][Q]),
+        'source': 'confirmation',
     }
     return v, c, dec
 
@@ -95,7 +103,7 @@ def three_b_development():
         'Ad': (r['adopt_decl_plaus'], e['adopt_decl_plaus']),
         'U': (r['uptake_override_gold_clean_wrong (FT2-B)'], e['uptake_override_gold_clean_wrong (FT2-B)']),
         'dT': tuple(cp['override_nonsense_target']), 'dAi': tuple(cp['override_plaus']),
-        'dAd': tuple(cp['decl_plaus']), 'dU': tuple(cg['S_over']), 'source': 'development', 'n': 256,
+        'dAd': tuple(cp['decl_plaus']), 'dU': tuple(cg['S_over']), 'source': 'development',
     }
 
 
@@ -111,71 +119,145 @@ def seven_b():
 
 
 # ----------------------------------------------------------------------------------------------- figure
-def figure(v3, v7, preview=False):
-    """Horizontal bars: one row per payload, 3B (Random vs Random + answer CE) left, released 7B right."""
+ROWS = [('T', 'Instruction,\nnonsense target'), ('Ai', 'Instruction,\nwrong answer'),
+        ('Ad', 'Fact,\nwrong answer'), ('U', 'Instruction,\ncorrect answer')]
+
+
+def style_rc():
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 8, 'axes.linewidth': 0.6,
                          'axes.edgecolor': INK2, 'xtick.color': INK2, 'ytick.color': INK,
-                         'axes.labelcolor': INK, 'text.color': INK, 'svg.fonttype': 'path', 'pdf.fonttype': 42, 'svg.hashsalt': 'sarra'})
-    fig = plt.figure(figsize=(6.3, 2.75))
-    gs = fig.add_gridspec(1, 3, width_ratios=[2.4, 1.05, 1.55], wspace=0.05, left=0.235, right=0.97, top=0.79, bottom=0.17)
-    ax3, axd, ax7 = fig.add_subplot(gs[0]), fig.add_subplot(gs[1]), fig.add_subplot(gs[2])
-    rows = [('T', 'Instruction form,\nnonsense target', 4.7), ('Ai', 'Instruction form,\nplausible wrong answer', 3.7),
-            ('Ad', 'Declarative form,\nplausible wrong answer', 2.7), ('U', 'Instruction form,\ngold answer', 1.0)]
-    h = 0.34
-    minus = lambda t: t.replace('-', '\u2212')
-    for ax in (ax3, ax7, axd):
-        ax.set_ylim(0.35, 5.75)
-        for side in ('top', 'right'):
-            ax.spines[side].set_visible(False)
-    for ax in (ax3, ax7):
-        ax.set_xlim(0, 100)
-        ax.set_xticks([0, 25, 50, 75, 100])
-        ax.grid(axis='x', color=GRID, linewidth=0.5)
-        ax.set_axisbelow(True)
-        ax.tick_params(axis='x', labelsize=7.8, length=2)
-        ax.tick_params(axis='y', length=0)
-        ax.axhline(1.85, color=GRID, linewidth=0.6)
-    ax3.set_yticks([y for *_, y in rows])
-    ax3.set_yticklabels([lab for _, lab, _ in rows], fontsize=8.2, linespacing=1.15)
-    ax7.set_yticks([])
-    axd.axis('off')
-    for k, _, y in rows:
+                         'axes.labelcolor': INK, 'text.color': INK, 'svg.fonttype': 'path', 'pdf.fonttype': 42,
+                         'svg.hashsalt': 'sarra'})
+
+
+def style_axis(ax):
+    ax.set_ylim(0.35, 5.75)
+    for side in ('top', 'right'):
+        ax.spines[side].set_visible(False)
+    ax.set_xlim(0, 100)
+    ax.set_xticks([0, 50, 100])
+    ax.grid(axis='x', color=GRID, linewidth=0.5)
+    ax.set_axisbelow(True)
+    ax.tick_params(axis='x', labelsize=7.8, length=2)
+    ax.tick_params(axis='y', length=0)
+    ax.axhline(1.85, color=GRID, linewidth=0.6)
+
+
+Y = {'T': 4.7, 'Ai': 3.7, 'Ad': 2.7, 'U': 1.0}
+H = 0.34
+
+
+def headers(ax):
+    ax.text(1.5, 5.6, 'wrong answer adopted', fontsize=7.6, color=INK2, va='center')
+    ax.text(1.5, 1.62, 'correct answer used', fontsize=7.6, color=INK2, va='center')
+
+
+def draw_3b(ax, v3, labels=True):
+    style_axis(ax)
+    ax.set_yticks([Y[k] for k, _ in ROWS])
+    ax.set_yticklabels([lab for _, lab in ROWS] if labels else [], fontsize=8.2, linespacing=1.15)
+    for k, _ in ROWS:
         r, c = v3[k]
-        for yy, val, col in ((y + h / 2, r, C_R), (y - h / 2, c, C_CE)):
-            ax3.barh(yy, 100 * val, h * 0.92, color=col, linewidth=0)
-            ax3.text(100 * val + 1.2, yy, f'{100 * val:.1f}', va='center', ha='left', fontsize=7.6, color=INK)
-        p, lo, hi = v3['d' + k]
-        axd.text(0.5, y, minus(f'{100 * p:+.1f}\n[{100 * lo:.1f}, {100 * hi:.1f}]'), ha='center', va='center',
-                 fontsize=7.6, color=INK2, linespacing=1.1, transform=axd.get_yaxis_transform())
+        for yy, val, col in ((Y[k] + H / 2, r, C_R), (Y[k] - H / 2, c, C_CE)):
+            ax.barh(yy, 100 * val, H * 0.92, color=col, linewidth=0)
+    headers(ax)
+    ax.set_xlabel('% of answers', fontsize=8.0)
+
+
+def draw_7b(ax, v7, labels=False):
+    style_axis(ax)
+    if labels:
+        ax.set_yticks([Y[k] for k, _ in ROWS])
+        ax.set_yticklabels([lab for _, lab in ROWS], fontsize=8.2, linespacing=1.15)
+    else:
+        ax.set_yticks([])
+    for k, _ in ROWS:
         p, lo, hi = v7[k]
-        ax7.barh(y, 100 * p, h * 1.1, color=C_7B, linewidth=0)
-        ax7.errorbar(100 * p, y, xerr=[[100 * (p - lo)], [100 * (hi - p)]], fmt='none', ecolor=INK2, elinewidth=0.7, capsize=1.6)
-        ax7.text(100 * hi + 1.5, y, f'{100 * p:.1f}', va='center', ha='left', fontsize=7.6, color=INK)
-    where = 'test split' if v3['source'] == 'confirmation' else 'dev. preview'
-    ax3.set_title(f'3B agents, {where}', fontsize=8.4, loc='left', fontweight='bold', pad=14)
-    axd.text(0.5, 6.2, 'CE minus\nno CE [95% CI]', ha='center', va='center', fontsize=7.6, color=INK2,
-             linespacing=1.1, transform=axd.get_yaxis_transform())
-    ax7.set_title('Released 7B, MuSiQue', fontsize=8.4, loc='left', fontweight='bold', pad=14)
-    ax3.text(0, 5.62, 'wrong payload: % of clean-correct answers', fontsize=7.6, color=INK2, va='center')
-    ax3.text(0, 1.62, 'gold payload: % of clean-wrong answers fixed', fontsize=7.6, color=INK2, va='center')
-    ax3.set_xlabel('% of answers', fontsize=8.0)
-    ax7.set_xlabel('% of answers (95% CI)', fontsize=8.0)
+        ax.barh(Y[k], 100 * p, H * 1.1, color=C_7B, linewidth=0)
+        ax.errorbar(100 * p, Y[k], xerr=[[100 * (p - lo)], [100 * (hi - p)]], fmt='none', ecolor=INK2, elinewidth=0.7, capsize=1.6)
+    if labels:
+        headers(ax)
+    ax.set_xlabel('% of answers', fontsize=8.0)
+
+
+def legend(fig, anchor, ncol=3):
     handles = [plt.Rectangle((0, 0), 1, 1, color=C_R), plt.Rectangle((0, 0), 1, 1, color=C_CE), plt.Rectangle((0, 0), 1, 1, color=C_7B)]
-    fig.legend(handles, ['Random injection', 'Random injection + answer CE', 'Released Search-R1 7B'],
-               loc='upper center', ncol=3, frameon=False, fontsize=8.0, bbox_to_anchor=(0.56, 1.0), handlelength=1.1, columnspacing=1.4)
+    fig.legend(handles, ['Random injection', '+ answer CE', 'Released 7B'],
+               loc='upper center', ncol=ncol, frameon=False, fontsize=8.0, bbox_to_anchor=anchor, handlelength=1.1, columnspacing=1.6)
+
+
+def figure(v3, v7, preview=False):
+    """Core figure for the paper: trained single-search agents (left) and a released multi-search agent (right)."""
+    style_rc()
+    fig = plt.figure(figsize=(6.3, 2.5))
+    gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 1.0], wspace=0.14, left=0.17, right=0.975, top=0.78, bottom=0.18)
+    ax3, ax7 = fig.add_subplot(gs[0]), fig.add_subplot(gs[1])
+    draw_3b(ax3, v3)
+    draw_7b(ax7, v7)
+    ax3.set_title('Trained single-search agents', fontsize=8.4, loc='left', fontweight='bold', pad=6)
+    ax7.set_title('Released multi-search agent', fontsize=8.4, loc='left', fontweight='bold', pad=6)
+    legend(fig, (0.575, 1.0))
     if preview:
         fig.text(0.5, 0.5, 'DEVELOPMENT PREVIEW - NOT FOR PUBLICATION', ha='center', fontsize=15.0, color='#e34948', alpha=0.35, rotation=10)
     return fig
 
 
-# ----------------------------------------------------------------------------------------------- macros and tables
+def figure_narrow(v3, v7):
+    """Stacked layout for narrow screens."""
+    style_rc()
+    fig = plt.figure(figsize=(3.6, 6.2))
+    gs = fig.add_gridspec(2, 1, height_ratios=[1, 1], hspace=0.42, left=0.33, right=0.95, top=0.85, bottom=0.07)
+    ax3, ax7 = fig.add_subplot(gs[0]), fig.add_subplot(gs[1])
+    draw_3b(ax3, v3)
+    draw_7b(ax7, v7, labels=True)
+    ax3.set_title('Trained single-search agents', fontsize=8.4, loc='left', fontweight='bold', pad=6)
+    ax7.set_title('Released multi-search agent', fontsize=8.4, loc='left', fontweight='bold', pad=6)
+    legend(fig, (0.5, 0.995), ncol=1)
+    return fig
+
+
+def figure_seeds(re):
+    """Per-seed strip plot: one row per configuration; open circles are seeds, the filled circle is the pooled rate."""
+    style_rc()
+    ds = re['descriptive']
+    panels = [('target_adoption_override', 'Nonsense target', (0, 70), [0, 30, 60]),
+              ('adoption_w_instruction', 'Wrong, instruction', (0, 100), [0, 50, 100]),
+              ('adoption_w_declarative', 'Wrong, fact', (0, 40), [0, 20, 40]),
+              ('gold_uptake_instruction', 'Correct, instruction', (80, 100), [80, 90, 100])]
+    rows = [('clean', 'No injection', '#7d7c76'), ('random_matched', 'Random injection', C_R), ('random_answer', '+ answer CE', C_CE)]
+    fig, axes = plt.subplots(1, 4, figsize=(6.3, 1.35), gridspec_kw={'wspace': 0.28})
+    for pi, (ax, (key, title, lim, ticks)) in enumerate(zip(axes, panels)):
+        for ri, (arm, name, col) in enumerate(rows):
+            y = len(rows) - 1 - ri
+            e = ds[arm][key]
+            vals = [100 * v for v in e['per_seed'].values()]
+            ax.plot([min(vals), max(vals)], [y, y], color=col, linewidth=1.2, alpha=0.6, solid_capstyle='round')
+            ax.scatter(vals, [y] * len(vals), s=16, facecolors='white', edgecolors=col, linewidths=1.0, zorder=3, clip_on=False)
+            ax.scatter([100 * e['point']], [y], s=22, color=col, zorder=4, clip_on=False)
+        ax.set_xlim(*lim)
+        ax.set_xticks(ticks)
+        ax.set_ylim(-0.5, len(rows) - 0.5)
+        ax.set_yticks(range(len(rows)))
+        ax.set_yticklabels([r[1] for r in rows[::-1]] if pi == 0 else [], fontsize=7.8)
+        ax.tick_params(axis='x', labelsize=7.4, length=2)
+        ax.tick_params(axis='y', length=0)
+        ax.grid(axis='x', color=GRID, linewidth=0.5)
+        ax.set_axisbelow(True)
+        for side in ('top', 'right', 'left'):
+            ax.spines[side].set_visible(False)
+        ax.set_title(title, fontsize=7.8, loc='left', color=INK)
+    fig.subplots_adjust(left=0.165, right=0.975, top=0.82, bottom=0.17)
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------- macros
 def macros_dev(m):
     d = load('dev_probes_3b.json')
     t = d['plausible_probes']['table']
     g = d['gold_probes']['table']
     cp = d['plausible_probes']['contrasts']
     cg = d['gold_probes']['contrasts']
-    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE'), ('clean', 'Clean'), ('paired', 'P'), ('paired_answer', 'PCE')):
+    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE'), ('clean', 'Clean')):
         x = t[arm]
         m[f'dvT{tag}'] = pct(x['adopt_override_nonsense_target (FT2-B)'])
         m[f'dvAi{tag}'] = pct(x['adopt_override_plaus'])
@@ -183,88 +265,54 @@ def macros_dev(m):
         m[f'dvU{tag}'] = pct(x['uptake_override_gold_clean_wrong (FT2-B)'])
         m[f'dvBenignGold{tag}'] = pct(g[arm]['uptake_on_clean_wrong:benign_gold'])
         m[f'dvDeclGold{tag}'] = pct(g[arm]['uptake_on_clean_wrong:decl_gold'])
-        m[f'dvCC{tag}'] = f"{x['n_clean_correct']:,}"
-        m[f'dvCW{tag}'] = f"{x['n_clean_wrong']:,}"
-    for key, tag in (('random_answer-random_matched', 'R'), ('paired_answer-paired', 'P')):
-        for k, name in (('override_plaus', 'Ai'), ('decl_plaus', 'Ad'), ('override_nonsense_target', 'T')):
-            p, lo, hi = cp[key][k]
-            m[f'dvD{name}{tag}'] = pts(p)
-            m[f'dvD{name}{tag}CI'] = ci(lo, hi)
-        for k, name in (('S_over', 'U'), ('S_benign', 'BenignGold'), ('S_decl', 'DeclGold')):
-            p, lo, hi = cg[key][k]
-            m[f'dvD{name}{tag}'] = pts(p)
-            m[f'dvD{name}{tag}CI'] = ci(lo, hi)
-    r, e = t['random_matched'], t['random_answer']
-    m['dvBonusR'] = pts(r['adopt_override_plaus'] - r['adopt_decl_plaus'])
-    m['dvBonusCE'] = pts(e['adopt_override_plaus'] - e['adopt_decl_plaus'])
-    # Control ladder (E2) and its control choice.
+        # Instruction pull: instruction form minus declarative form, for wrong and for gold content.
+        m[f'dvPullWrong{tag}'] = f"{100 * (x['adopt_override_plaus'] - x['adopt_decl_plaus']):.0f}"
+        m[f'dvPullGold{tag}'] = f"{100 * (g[arm]['uptake_on_clean_wrong:override_gold'] - g[arm]['uptake_on_clean_wrong:decl_gold']):.0f}"
+    k = cp['random_answer-random_matched']
+    for key, name in (('override_plaus', 'Ai'), ('decl_plaus', 'Ad'), ('override_nonsense_target', 'T')):
+        p, lo, hi = k[key]
+        m[f'dvD{name}R'] = pts(p)
+        m[f'dvD{name}RCI'] = ci(lo, hi)
+    k = cg['random_answer-random_matched']
+    for key, name in (('S_over', 'U'), ('S_benign', 'BenignGold'), ('S_decl', 'DeclGold')):
+        p, lo, hi = k[key]
+        m[f'dvD{name}R'] = pts(p)
+        m[f'dvD{name}RCI'] = ci(lo, hi)
     c = load('dev_controls_3b.json')
-    p1 = c['predictions']['P1']
-    m['ctlExcessNeutral'] = pts(p1['excess_vs_neutral'][0])
-    m['ctlExcessNeutralCI'] = ci(*p1['excess_vs_neutral'][1])
-    m['ctlExcessBenign'] = pts(p1['excess_vs_benign_instruction'][0])
-    m['ctlExcessBenignCI'] = ci(*p1['excess_vs_benign_instruction'][1])
-    p2 = c['predictions']['P2']
-    m['ctlFluent'] = pts(p2['fluent_minus_neutral_other_wrong'][0])
-    m['ctlFluentCI'] = ci(*p2['fluent_minus_neutral_other_wrong'][1])
     rates = c['control_selection_for_confirmation']['pooled_other_wrong_rates']
-    for k, name in (('neutral', 'Neutral'), ('benign_instruction', 'Benign'), ('fluent_irrelevant', 'Fluent')):
-        m[f'ctlRate{name}'] = pct(rates[k])
-    vals = c['predictions']['P3']['values']
-    m['ctlExcessBenignR'] = pts(vals['random_matched'][0])
-    m['ctlExcessBenignRCI'] = ci(*vals['random_matched'][1])
-    m['ctlExcessBenignCE'] = pts(vals['random_answer'][0])
-    m['ctlExcessBenignCECI'] = ci(*vals['random_answer'][1])
-    # Judge calibration (exploratory study).
-    j = load('exploratory_interference_3b.json')['judge']
-    m['judgeAgreement'] = f"{j['agreement']:.2f}"
-    m['judgeKappa'] = f"{j['cohen_kappa']:.2f}"
-    # Search counts (kill check).
-    k = load('killcheck_searches.json')['summary']['models']
-    m['ksThreeMean'] = f"{k['searchr1_3b']['e5_clean']['mean_searches']:.2f}"
-    m['ksSevenMean'] = f"{k['searchr1_7b']['e5_clean']['mean_searches']:.2f}"
-    m['ksSevenGeTwo'] = pct(k['searchr1_7b']['e5_clean']['ge2'], 0)
-    m['ksThreeGeTwo'] = pct(k['searchr1_3b']['e5_clean']['ge2'], 0)
+    for key, name in (('neutral', 'Neutral'), ('benign_instruction', 'Benign'), ('fluent_irrelevant', 'Fluent')):
+        m[f'ctlRate{name}'] = pct(rates[key])
+    s = load('search_counts.json')['summary']['models']
+    m['scThreeMean'] = f"{s['searchr1_3b']['e5_clean']['mean_searches']:.2f}"
+    m['scThreeTarget'] = pct(s['searchr1_3b']['ft1d_override_vs_clean']['target_hit'], 0)
+    m['scSevenTarget'] = pct(s['searchr1_7b']['ft1d_override_vs_clean']['target_hit'])
+    m['scThreeCleanEM'] = pct(s['searchr1_3b']['e5_clean']['em'])
+    m['scSevenCleanEM'] = pct(s['searchr1_7b']['e5_clean']['em'])
+    m['scN'] = str(s['searchr1_3b']['e5_clean']['n'])
 
 
 def macros_7b(m, v7, b):
     cell = b['per_cell']
-    m['sbT'] = pct(v7['T'][0]); m['sbTCI'] = ci(*v7['T'][1:])
+    m['sbT'] = pct(v7['T'][0])
     m['sbAi'] = pct(v7['Ai'][0]); m['sbAiCI'] = ci(*v7['Ai'][1:])
     m['sbAd'] = pct(v7['Ad'][0]); m['sbAdCI'] = ci(*v7['Ad'][1:])
     m['sbU'] = pct(v7['U'][0]); m['sbUCI'] = ci(*v7['U'][1:])
     m['sbNcc'] = f"{v7['n_cc']:,}"
     m['sbNcw'] = f"{v7['n_cw']:,}"
-    pr = b['predictions']
-    bonus = pr['PB1-2']['value']
+    bonus = b['predictions']['PB1-2']['value']
     m['sbBonus'] = pts(bonus['point']); m['sbBonusCI'] = ci(*bonus['ci95'])
     m['sbCleanEM'] = pct(cell['native/clean']['em_all']['point'])
     m['sbCleanSearches'] = f"{cell['native/clean']['mean_searches_all']['point']:.2f}"
     m['sbCleanGeTwo'] = pct(cell['native/clean']['ge2_searches'], 0)
-    v = pr['PB1-4']['value']
-    m['sbVerifySearches'] = f"{v['searches']['point']:+.2f}"
-    m['sbVerifySearchesCI'] = f"[{v['searches']['ci95'][0]:.2f}, {v['searches']['ci95'][1]:.2f}]"
-    m['sbVerifyAdopt'] = pts(v['adoption']['point']); m['sbVerifyAdoptCI'] = ci(*v['adoption']['ci95'])
-    f5, f6 = pr['PB1-5']['value'], pr['PB1-6']['value']
-    m['sbForcedK'], m['sbForcedM'] = str(f5['k']), str(f5['m'])
-    m['sbForcedRate'] = pct(f5['rate'], 0); m['sbForcedCI'] = ci(*f5['wilson95'], d=0)
-    m['sbSpontK'], m['sbSpontM'] = str(f6['k']), str(f6['m'])
-    m['sbSpontRate'] = pct(f6['rate'], 0); m['sbSpontCI'] = ci(*f6['wilson95'], d=0)
-    rec = b['recovery']
-    correct = rec['native/decl_plaus']['final_correct'] + rec['native/override_plaus']['final_correct']
-    m['sbSpontCorrect'] = str(correct)
-    for k in ('PB1-1', 'PB1-2', 'PB1-3', 'PB1-4', 'PB1-5', 'PB1-6'):
-        m['sbDecision' + 'ABCDEF'[int(k[-1]) - 1]] = 'supported' if pr[k]['decision'] == 'SUPPORTED' else 'refuted'
 
 
-def macros_conf(m, v3, c, dec):
-    q = 'question_bootstrap_95pct_interval_fixed_models'
-    m['cfT' + 'R'], m['cfT' + 'CE'] = pct(v3['T'][0]), pct(v3['T'][1])
+def macros_conf(m, v3, c, dec, re):
+    m['cfTR'], m['cfTCE'] = pct(v3['T'][0]), pct(v3['T'][1])
     m['cfAiR'], m['cfAiCE'] = pct(v3['Ai'][0]), pct(v3['Ai'][1])
-    m['cfBonusR'] = pts(v3['Ai'][0] - v3['Ad'][0])
-    m['cfBonusCE'] = pts(v3['Ai'][1] - v3['Ad'][1])
     m['cfAdR'], m['cfAdCE'] = pct(v3['Ad'][0]), pct(v3['Ad'][1])
     m['cfUR'], m['cfUCE'] = pct(v3['U'][0]), pct(v3['U'][1])
+    m['cfBonusR'] = pts(v3['Ai'][0] - v3['Ad'][0])
+    m['cfBonusCE'] = pts(v3['Ai'][1] - v3['Ad'][1])
     for k, name in (('dT', 'DT'), ('dAi', 'DAi'), ('dAd', 'DAd'), ('dU', 'DU')):
         p, lo, hi = v3[k]
         m['cf' + name] = pts(p)
@@ -272,83 +320,96 @@ def macros_conf(m, v3, c, dec):
         m['cf' + name + 'Abs'] = f'{abs(100 * p):.1f}'
     comp = c['primary_components']
     m['cfXR'], m['cfXCE'] = pts(comp['P_d']['X_R']), pts(comp['P_d']['X_CE'])
-    for k in ('P_a', 'P_b', 'P_c', 'P_d'):
-        d = dec[k]
-        tag = 'cfP' + k[-1]
-        m[tag] = pts(d['point'])
-        m[tag + 'CI'] = ci(*d[q])
-        m[tag + 'p'] = f"{d['p_one_sided']:.4f}" if d['p_one_sided'] >= 1e-4 else '<0.0001'
-        m[tag + 'Holm'] = f"{d['holm_adjusted_p']:.4f}" if d['holm_adjusted_p'] >= 1e-4 else '<0.0001'
-        m[tag + 'Decision'] = 'confirmed' if d['decision'] == 'CONFIRMED' else 'not confirmed'
-        m[tag + 'Seeds'] = ', '.join(pts(x) for x in d['per_seed'].values())
-        bound = d.get('holm_adjusted_one_sided_upper_bound', d.get('holm_adjusted_one_sided_lower_bound'))
-        m[tag + 'Bound'] = pts(bound)
-    cells = c['cells']
-    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE'), ('clean', 'Clean')):
-        e = cells.get(f'none/{arm}')
-        if not e:
-            continue
-        m[f'cfCleanEM{tag}'] = pct(e['clean_em'])
-        att = (e['all_question_em']['test_override'] + e['all_question_em']['test_authority']) / 2
-        m[f'cfAttackEM{tag}'] = pct(att)
-        m[f'cfHitAll{tag}'] = pct(e['target_hit_all_questions']['test_override'])
-        m[f'cfHitAuth{tag}'] = pct(e['target_hit_all_questions']['test_authority'])
-        m[f'cfSearches{tag}'] = f"{e['mean_searches']['clean']:.2f}"
-        m[f'cfCC{tag}'] = f"{e['clean_correct_pairs']:,}"
-    for k in ('P_a', 'P_b', 'P_c', 'P_d'):
-        tag = 'cfP' + k[-1]
-        m[tag + 'Nested'] = ci(*dec[k]['descriptive_nested_95pct_interval'])
-        m[tag + 'Level'] = f"{dec[k]['holm_level']:.4f}".rstrip('0')
-        m[tag + 'Abs'] = f"{abs(100 * dec[k]['point']):.1f}"
-    di = comp['P_b']['delta_instruction']
-    m['cfDAiNested'] = ci(*di['descriptive_nested_95pct_interval'])
-    m['cfDAiSeeds'] = ', '.join(pts(x) for x in di['per_seed'].values())
-    m['cfDAdSeeds'] = ', '.join(pts(x) for x in comp['P_b']['delta_declarative']['per_seed'].values())
     xr, xc = comp['P_d']['X_R_rates'], comp['P_d']['X_CE_rates']
     m['cfXRAttack'], m['cfXRControl'] = pct(xr[0]), pct(xr[1])
     m['cfXCEAttack'], m['cfXCEControl'] = pct(xc[0]), pct(xc[1])
     m['cfPairsCCR'], m['cfPairsCCCE'] = f"{comp['P_a']['pairs_R']:,}", f"{comp['P_a']['pairs_CE']:,}"
     m['cfPairsCWR'], m['cfPairsCWCE'] = f"{comp['P_c']['pairs_R']:,}", f"{comp['P_c']['pairs_CE']:,}"
-    sec = c['secondary']
-    for crit, tag in (('criterion_f1_half', 'Fone'), ('criterion_judge', 'Judge')):
-        d = sec[crit]['decisions_if_tested_same_way']
-        for k in ('P_a', 'P_b', 'P_c', 'P_d'):
-            m[f'cf{tag}P{k[-1]}'] = pts(d[k]['point'])
-            m[f'cf{tag}P{k[-1]}CI'] = ci(*d[k][q])
-        m[f'cf{tag}All'] = 'all four confirmed' if all(d[k]['decision'] == 'CONFIRMED' for k in d) else 'not all confirmed'
-    st = sec['evidence_strata']
+    for k in ('P_a', 'P_b', 'P_c', 'P_d'):
+        d = dec[k]
+        tag = 'cfP' + k[-1]
+        m[tag] = pts(d['point'])
+        m[tag + 'CI'] = ci(*d[Q])
+        m[tag + 'Nested'] = ci(*d['descriptive_nested_95pct_interval'])
+        m[tag + 'Abs'] = f"{abs(100 * d['point']):.1f}"
+        m[tag + 'Seeds'] = seeds(d['per_seed'], signed=True)
+        bound = d.get('holm_adjusted_one_sided_upper_bound', d.get('holm_adjusted_one_sided_lower_bound'))
+        m[tag + 'Bound'] = pts(bound)
+    cells = c['cells']
+    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE'), ('clean', 'Clean')):
+        e = cells[f'none/{arm}']
+        m[f'cfCleanEM{tag}'] = pct(e['clean_em'])
+        m[f'cfAttackEM{tag}'] = pct((e['all_question_em']['test_override'] + e['all_question_em']['test_authority']) / 2)
+        m[f'cfHitAll{tag}'] = pct(e['target_hit_all_questions']['test_override'])
+        m[f'cfHitAuth{tag}'] = pct(e['target_hit_all_questions']['test_authority'])
+        m[f'cfSearches{tag}'] = f"{e['mean_searches']['clean']:.2f}"
+    m['cfPairedU'] = pct(cells['none/paired']['gold_uptake_instruction_clean_wrong'])
+    m['cfPairedCEU'] = pct(cells['none/paired_answer']['gold_uptake_instruction_clean_wrong'])
+    sr = c['secondary_readings']
+    lo, hi = sr['declarative_no_transfer_within_5_points']['interval_90']
+    m['cfDAdNinety'] = ci(lo, hi)
+    d = c['secondary']['criterion_f1_half']['decisions_if_tested_same_way']
+    m['cfFonePc'] = pts(d['P_c']['point'])
+    m['cfFonePcCI'] = ci(*d['P_c'][Q])
+    m['cfFoneAll'] = 'all four confirmed' if all(d[k]['decision'] == 'CONFIRMED' for k in d) else 'not all confirmed'
+    for k in ('P_a', 'P_b', 'P_d'):
+        m['cfFoneP' + k[-1]] = pts(d[k]['point'])
+    st = c['secondary']['evidence_strata']
     for name, tag in (('gold_in_clean_docs', 'In'), ('gold_not_in_clean_docs', 'Out')):
-        for key, kt in (('adoption_instruction', 'Ai'), ('adoption_declarative', 'Ad'), ('gold_uptake_instruction_clean_wrong', 'U')):
+        for key, kt in (('adoption_instruction', 'Ai'), ('adoption_declarative', 'Ad')):
             e = st[name][key]
             m[f'cfSt{tag}{kt}R'], m[f'cfSt{tag}{kt}CE'] = pct(e['R']), pct(e['CE'])
             m[f'cfSt{tag}{kt}D'] = pts(e['delta']['point'])
-            m[f'cfSt{tag}{kt}DCI'] = ci(*e['delta'][q])
-            m[f'cfSt{tag}{kt}Pairs'] = f"{e['pairs'][0]:,}"
-    d1 = c['draft_contrasts_secondary']['C1_residual_interference_CE_vs_benign_D1']
-    m['cfResidual'] = pts(d1['point'])
-    m['cfResidualCI'] = ci(*d1[q])
-    m['cfJudgeItems'] = f"{c['judge']['items']:,}"
-    sr = c['secondary_readings']
-    m['cfDeclNoTransfer'] = 'holds' if sr['declarative_no_transfer_within_5_points']['holds'] else 'does not hold'
-    lo, hi = sr['declarative_no_transfer_within_5_points']['interval_90']
-    m['cfDAdNinety'] = ci(lo, hi)
-    m['cfInstrLarge'] = 'holds' if sr['instruction_drop_is_large']['holds'] else 'does not hold'
+            m[f'cfSt{tag}{kt}DCI'] = ci(*e['delta'][Q])
+            m[f'cfSt{tag}{kt}PairsR'], m[f'cfSt{tag}{kt}PairsCE'] = f"{e['pairs'][0]:,}", f"{e['pairs'][1]:,}"
+    # Re-analysis of the released outcome table (descriptive, post hoc).
+    ds = re['descriptive']
+    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE'), ('clean', 'Clean')):
+        e = ds[arm]
+        m[f'reT{tag}Seeds'] = seeds(e['target_adoption_override']['per_seed'])
+        m[f'reAi{tag}Seeds'] = seeds(e['adoption_w_instruction']['per_seed'])
+        m[f'reAd{tag}Seeds'] = seeds(e['adoption_w_declarative']['per_seed'])
+        m[f'reU{tag}Seeds'] = seeds(e['gold_uptake_instruction']['per_seed'])
+        vals = list(e['target_adoption_override']['per_seed'].values())
+        m[f'reT{tag}Min'], m[f'reT{tag}Max'] = pct(min(vals)), pct(max(vals))
+        for key, kt in (('adoption_w_instruction', 'Ai'), ('gold_uptake_instruction', 'U')):
+            vals = list(e[key]['per_seed'].values())
+            m[f're{kt}{tag}Min'], m[f're{kt}{tag}Max'] = pct(min(vals)), pct(max(vals))
+        one = e['interference_all_clean_correct']['excess']
+        m[f'reDone{tag}'] = pts(one['point'])
+        m[f'reDone{tag}CI'] = ci(*one['ci95'])
+        m[f'reGoldIn{tag}'] = pct(e['clean_correct_with_gold_in_clean_retrieval'])
+    dd = ds['interference_all_clean_correct_CE_minus_R']
+    m['reDoneDiff'] = pts(dd['point'])
+    m['reDoneDiffCI'] = ci(*dd['ci95'])
+    for arm, tag in (('random_matched', 'R'), ('random_answer', 'CE')):
+        m[f'reCorrectOverride{tag}'] = pct(ds[arm]['override_outcomes_clean_correct']['correct'])
+    sd = ds['instruction_adoption_stratum_difference']
+    m['reStrataDiff'] = pts(sd['point'])
+    m['reStrataDiffCI'] = ci(*sd['ci95'])
+    lo_ = ds['log_odds_change_CE_minus_R']
+    m['reLogOddsInstr'] = f"{lo_['instruction_w']:.2f}".replace('-', '$-$')
+    m['reLogOddsDecl'] = f"{lo_['declarative_w']:.2f}".replace('-', '$-$')
+    m['reLogOddsGold'] = f"{lo_['gold_uptake']:.2f}".replace('-', '$-$')
+    m['reCleanGoldCost'] = f"{abs(100 * (ds['random_answer']['gold_uptake_instruction']['point'] - ds['clean']['gold_uptake_instruction']['point'])):.1f}"
+    # Training updates per run, from the public protocol.
+    prot = json.loads(PROTOCOL.read_text())
+    steps = {(x['arm'], str(x['seed'])): x['training_steps'] for x in prot['models']}
+    m['updatesCE'] = ', '.join(str(steps['random_answer', s]) for s in SEEDS)
+    m['updatesR'] = ', '.join(str(steps['random_matched', s]) for s in SEEDS)
 
 
+# ----------------------------------------------------------------------------------------------- tables
 def table_all_arms(c):
-    """Appendix: probe rates for all five configurations on the fresh test split (descriptive)."""
     rows = []
     for arm in ARM_ORDER:
-        e = c['cells'].get(f'none/{arm}')
-        if not e:
-            continue
+        e = c['cells'][f'none/{arm}']
         rows.append(f"{ARM_NAMES[arm]} & {pct(e['clean_em'])} & {pct(e['target_hit_clean_correct']['test_override']['point'])} & "
                     f"{pct(e['adoption_w_instruction'])} & {pct(e['adoption_w_declarative'])} & {pct(e['gold_uptake_instruction_clean_wrong'])}\\\\")
     (GEN / 'all-arms.tex').write_text('\n'.join(rows) + '\n')
 
 
 def table_dev_vs_conf(v3dev, v3):
-    """Main text: development (256 questions) next to the fresh test, Random vs Random + answer CE."""
     lab = {'T': 'Instruction, nonsense target', 'Ai': 'Instruction, plausible wrong', 'Ad': 'Declarative, plausible wrong',
            'U': 'Instruction, gold (uptake)'}
     rows = []
@@ -360,20 +421,53 @@ def table_dev_vs_conf(v3dev, v3):
 
 
 def table_primary(dec):
-    """Appendix: the four primary contrasts with Holm decisions."""
-    q = 'question_bootstrap_95pct_interval_fixed_models'
     rows = []
     for k in ('P_a', 'P_b', 'P_c', 'P_d'):
         d = dec[k]
         bound = d.get('holm_adjusted_one_sided_upper_bound', d.get('holm_adjusted_one_sided_lower_bound'))
-        seeds = ', '.join(f"{100 * x:+.1f}" for x in d['per_seed'].values()).replace('-', '$-$')
-        rows.append(f"$P_{k[-1]}$ & {pts(d['point'])} & {ci(*d[q])} & {ci(*d['descriptive_nested_95pct_interval'])} & {seeds} & "
-                    f"{d['holm_level']:.4f} & {pts(bound)} & {'confirmed' if d['decision'] == 'CONFIRMED' else 'not confirmed'}\\\\")
+        rows.append(f"$P_{k[-1]}$ & {pts(d['point'])} & {ci(*d[Q])} & {ci(*d['descriptive_nested_95pct_interval'])} & "
+                    f"{seeds(d['per_seed'], signed=True)} & {d['holm_level']:.4f} & {pts(bound)} & "
+                    f"{'confirmed' if d['decision'] == 'CONFIRMED' else 'not confirmed'}\\\\")
     (GEN / 'primary.tex').write_text('\n'.join(rows) + '\n')
 
 
+def table_seeds(re):
+    """Appendix: per-configuration, per-seed rates on the test split (descriptive)."""
+    ds = re['descriptive']
+    rows = []
+    for arm in ARM_ORDER:
+        e = ds[arm]
+        for i, s in enumerate(SEEDS):
+            name = {'clean': 'Clean', 'random_matched': 'Random', 'random_answer': '+ CE'}[arm] if i == 0 else ''
+            g = lambda key: pct(e[key]['per_seed'][s])
+            two = e['interference_target_avoiding']['excess']['per_seed'][s]
+            one = e['interference_all_clean_correct']['excess']['per_seed'][s]
+            rows.append(f"{name} & {i + 1} & {g('target_adoption_override')} & {g('adoption_w_instruction')} & "
+                        f"{g('adoption_w_declarative')} & {g('gold_uptake_instruction')} & {pts(two)} & {pts(one)}\\\\")
+        if arm != ARM_ORDER[-1]:
+            rows.append('\\addlinespace')
+    (GEN / 'seeds.tex').write_text('\n'.join(rows) + '\n')
+
+
+def table_interference(re, dec):
+    """Main text: outcomes under the override attack on clean-correct pairs, and the interference excess (Section 5.3)."""
+    ds = re['descriptive']
+    rows = []
+    for arm in ARM_ORDER:
+        e = ds[arm]
+        o = e['override_outcomes_clean_correct']
+        name = {'clean': 'Clean', 'random_matched': 'Random', 'random_answer': '+ CE'}[arm]
+        rows.append(f"{name} & {e['clean_correct_pairs']:,} & {pct(o['correct'])} & {pct(o['target'])} & {pct(o['other_wrong'])} & "
+                    f"{pct(e['benign_instruction_other_wrong_clean_correct'])} & {pts(e['interference_target_avoiding']['excess']['point'])} & "
+                    f"{pts(e['interference_all_clean_correct']['excess']['point'])}\\\\")
+    rows.append('\\midrule')
+    one = ds['interference_all_clean_correct_CE_minus_R']
+    rows.append(f"CE $-$ R & & {pts(ds['random_answer']['override_outcomes_clean_correct']['correct'] - ds['random_matched']['override_outcomes_clean_correct']['correct'])} & "
+                f"& & & {pts(dec['P_d']['point'])} & {pts(one['point'])}\\\\")
+    (GEN / 'interference.tex').write_text('\n'.join(rows) + '\n')
+
+
 def table_dev_probes():
-    """Appendix: development probes for all five configurations (256 development questions)."""
     d = load('dev_probes_3b.json')
     t, g = d['plausible_probes']['table'], d['gold_probes']['table']
     rows = []
@@ -385,28 +479,11 @@ def table_dev_probes():
     (GEN / 'dev-probes.tex').write_text('\n'.join(rows) + '\n')
 
 
-def table_7b(b):
-    cell = b['per_cell']
-    rows = []
-    names = {'native': 'Native prompt', 'verify': 'Verification prompt', 'forced': 'Forced extra search'}
-    for var in ('native', 'verify', 'forced'):
-        g = lambda cnd, k: cell[f'{var}/{cnd}'][k]['point']
-        rows.append(f"{names[var]} & {pct(g('clean', 'em_all'))} & {cell[f'{var}/clean']['mean_searches_all']['point']:.2f} & "
-                    f"{pct(g('override', 'target_hit_clean_correct'))} & {pct(g('override_plaus', 'adopt_w_clean_correct'))} & "
-                    f"{pct(g('decl_plaus', 'adopt_w_clean_correct'))} & {pct(g('override_gold', 'em_clean_wrong'))}\\\\")
-    (GEN / 'seven-b.tex').write_text('\n'.join(rows) + '\n')
-
-
 def table_7b_predictions(b):
-    """Appendix: the six frozen 7B predictions with their outcomes."""
     pr = b['predictions']
-    text = {'PB1-1': ('Declarative $w(q)$ adopted on $\\geq$10\\% of clean-correct', lambda v: pct(v['point'])),
+    text = {'PB1-1': ('Declarative $w(q)$ adopted on $\\geq$10\\% of clean-correct questions', lambda v: pct(v['point'])),
             'PB1-2': ('Instruction minus declarative adoption $\\leq$10 points', lambda v: pts(v['point'])),
-            'PB1-3': ('Gold in instruction form used on $\\geq$40\\% of clean-wrong', lambda v: pct(v['point'])),
-            'PB1-4': ('Verification prompt adds $\\geq$0.3 searches; declarative adoption falls by $<$5 points',
-                      lambda v: f"{v['searches']['point']:+.2f}; {pts(v['adoption']['point'])}"),
-            'PB1-5': ('Forced search: $\\leq$20\\% of adopted $w(q)$ end elsewhere', lambda v: f"{v['k']}/{v['m']}"),
-            'PB1-6': ('After a mention: $\\leq$20\\% of episodes end elsewhere', lambda v: f"{v['k']}/{v['m']}")}
+            'PB1-3': ('Gold in instruction form used on $\\geq$40\\% of clean-wrong questions', lambda v: pct(v['point']))}
     rows = []
     for k, (stmt, fmt) in text.items():
         rows.append(f"{k} & {stmt} & {fmt(pr[k]['value'])} & {'supported' if pr[k]['decision'] == 'SUPPORTED' else 'refuted'}\\\\")
@@ -416,14 +493,14 @@ def table_7b_predictions(b):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--preview-dev', action='store_true', help='draw the figure from development numbers (layout check only)')
-    p.add_argument('--preview-out', default='/tmp', help='directory for the preview image')
+    p.add_argument('--preview-out', default=str(ROOT / 'paper' / 'build'), help='directory for the preview image')
     a = p.parse_args()
-    GEN.mkdir(parents=True, exist_ok=True)
-    FIG.mkdir(parents=True, exist_ok=True)
-    ASSETS.mkdir(parents=True, exist_ok=True)
+    for d in (GEN, FIG, ASSETS):
+        d.mkdir(parents=True, exist_ok=True)
     v7, b = seven_b()
     v3dev = three_b_development()
     if a.preview_dev:
+        Path(a.preview_out).mkdir(parents=True, exist_ok=True)
         out = Path(a.preview_out) / 'gate-preview.png'
         figure(v3dev, v7, preview=True).savefig(out, dpi=200, bbox_inches='tight')
         print('preview written to', out)
@@ -432,24 +509,25 @@ def main():
     macros_dev(m)
     macros_7b(m, v7, b)
     m.write(GEN / 'numbers-dev.tex')
-    table_7b(b)
     table_7b_predictions(b)
     table_dev_probes()
-    if not (RES / 'confirmation_3b.json').exists():
-        print('results/confirmation_3b.json not found: wrote development assets only')
-        return
     v3, c, dec = three_b_confirmation()
+    re = load('confirmation_3b_reanalysis.json')
     m = Macros()
-    macros_conf(m, v3, c, dec)
+    macros_conf(m, v3, c, dec, re)
     m.write(GEN / 'numbers-conf.tex')
     table_all_arms(c)
-    table_primary(dec)
     table_dev_vs_conf(v3dev, v3)
+    table_primary(dec)
+    table_seeds(re)
+    table_interference(re, dec)
     fig = figure(v3, v7)
     fig.savefig(FIG / 'gate.pdf', metadata={'CreationDate': None, 'ModDate': None})
     fig.savefig(ASSETS / 'gate.svg', bbox_inches='tight', metadata={'Date': None})
     fig.savefig(ASSETS / 'gate.png', dpi=220, bbox_inches='tight', metadata={'Software': None})
-    print('wrote', GEN / 'numbers-conf.tex', FIG / 'gate.pdf', ASSETS / 'gate.png')
+    figure_narrow(v3, v7).savefig(ASSETS / 'gate-narrow.png', dpi=220, bbox_inches='tight', metadata={'Software': None})
+    figure_seeds(re).savefig(FIG / 'seeds.pdf', metadata={'CreationDate': None, 'ModDate': None})
+    print('wrote', GEN / 'numbers-dev.tex', GEN / 'numbers-conf.tex', FIG / 'gate.pdf', ASSETS / 'gate.png', ASSETS / 'gate-narrow.png')
 
 
 if __name__ == '__main__':

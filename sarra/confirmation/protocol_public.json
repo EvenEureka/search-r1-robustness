@@ -1,7 +1,7 @@
 {
   "public_redaction": {
     "original_sha256": "9f2337fa656ebadda7fac838c9317d7bc51196630a23debb0fe14c51a08c3350",
-    "note": "Paths and scheduler fields redacted; the scientific content (conditions, payloads, predictions, primary contrasts, decision rules, analysis settings) is unchanged. A few free-text phrases that referred to other projects or to earlier internal discussions were reworded."
+    "note": "Local path prefixes replaced by relative paths; scheduler-only fields removed (queue, hosts, judge hosts, GPU environment path, interpreter path, training job ids) together with the four scheduler-script entries of \"files\"; job-id suffixes removed from run directory names; two short phrases naming the scheduler and a local log file removed from free text. Nothing else differs from the frozen protocol whose sha256 is original_sha256."
   },
   "status": "FROZEN_BEFORE_TEST_INFERENCE",
   "version": "confirmation_v2",
@@ -250,7 +250,7 @@
       }
     }
   ],
-  "models_note": "The 15 quota_rerun_3b_v1f final exports (model_files hashes copied from confirmation_fresh_v1). No retraining, no checkpoint selection.",
+  "models_note": "The 15 corrected quota_rerun_3b_v1f final exports (model_files hashes copied from confirmation_fresh_v1). No retraining, no checkpoint selection.",
   "tokenizer_sha256": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
   "splits": {
     "test": {
@@ -466,7 +466,7 @@
     "optimizer_checkpoints_created": 0,
     "reserve_bytes": 107374182400,
     "passes": true,
-    "cleanup": "nothing to clean: evaluation reuses the 15 frozen exports read-only and writes only traces, logs and summaries (research evidence, retained)"
+    "cleanup": "nothing to clean: evaluation reuses the 15 frozen corrected exports read-only and writes only traces, logs and summaries (research evidence, retained)"
   },
   "disjointness_checks": {
     "smoke_vs_fresh_test_v2": 0,

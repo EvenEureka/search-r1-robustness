@@ -1,4 +1,4 @@
-"""Use the pilot's per-question BM25 retrieval and assistant-only outcome reward."""
+"""Per-question BM25 retrieval environment with an assistant-only exact-match outcome reward."""
 import re
 from rank_bm25 import BM25Okapi
 from skyrl_gym.envs.search.env import SearchEnv, SearchEnvConfig

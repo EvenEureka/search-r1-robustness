@@ -1,11 +1,11 @@
-# killcheck (FT1): do released Search-R1 agents search more than once?
+# search_counts (FT1): do released Search-R1 agents search more than once?
 
 This study runs the released Search-R1 3B and 7B checkpoints on 300 MuSiQue dev questions (S300) over an open multi-hop corpus. It records how often they search at least twice (FT1-C) and how often they adopt the override target when it is appended to the first retrieved document (FT1-D, exploratory). Two CPU add-ons complete it:
 
 - FT1-A (`ft1a_cpu.py`): is one BM25 search with the question as the query enough to retrieve every supporting paragraph?
 - FT1-B (`ft1b_cpu.py`, saved HotpotQA traces): is the gold answer already in the first top 3?
 
-The decision thresholds are in `protocol_public.json`. Installed name: `studies/multisearch_killcheck_v1`.
+The thresholds are in `protocol_public.json`; `analyze.py` labels each released agent GO if it searches often enough for a multi-search study and NO-GO otherwise. Installed name: `studies/multisearch_killcheck_v1`.
 
 ## Setup
 
@@ -57,7 +57,7 @@ python -B $S/source/analyze.py                       # -> $S/analysis/summary.js
 python -B $S/source/ft1b_cpu.py                      # FT1-B; needs saved HotpotQA development traces (not included)
 ```
 
-`test_msq.py` also runs straight from this release: `python -B killcheck/test_msq.py <scratch>/cpu_tests.json`.
+`test_msq.py` also runs straight from this release: `python -B search_counts/test_msq.py <scratch>/cpu_tests.json`.
 
 ## Outputs
 

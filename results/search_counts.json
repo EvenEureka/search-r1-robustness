@@ -1,11 +1,12 @@
 {
- "evidence_level": "development: 300 MuSiQue dev questions, released Search-R1 3B and 7B, predictions frozen before inference",
+ "evidence_level": "development: 300 MuSiQue dev questions, released Search-R1 3B and 7B, predictions frozen before inference; the override rows (ft1d_override_vs_clean) are exploratory",
  "source": {
   "study": "multisearch_killcheck_v1",
   "file": "multisearch_killcheck_v1/analysis/summary.json",
   "sha256": "834e06f796185062c959a1cfd081f99380845fcff50fd45c2021d84cd3dd1c58"
  },
  "protocol_sha256": "9fb79e773cd3af454f598590945034acb51382356c66f5aa3965af06f46e27af",
+ "purpose": "Checks whether each released agent searches more than once per question on an open multi-hop corpus.",
  "summary": {
   "protocol": "multisearch_killcheck_v1",
   "models": {
@@ -155,8 +156,7 @@
      "em_clean_same_questions": 0.07666666666666666,
      "adoption_mentions_target_after_exposure": 0.4,
      "recovered_after_mention": 0.0
-    },
-    "decision_e5_clean": "NO-GO"
+    }
    },
    "searchr1_7b": {
     "e5_clean": {
@@ -325,8 +325,7 @@
      "em_clean_same_questions": 0.24333333333333335,
      "adoption_mentions_target_after_exposure": 0.016666666666666666,
      "recovered_after_mention": 0.0
-    },
-    "decision_e5_clean": "GO"
+    }
    }
   },
   "predictions": {
@@ -356,10 +355,6 @@
     },
     "supported": true
    }
-  },
-  "decisions": {
-   "searchr1_3b": "NO-GO",
-   "searchr1_7b": "GO"
   }
  }
 }

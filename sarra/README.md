@@ -12,10 +12,12 @@ This release contains the code for the experiments on prompt-injection robustnes
 | `probes/gold/` | FT2-B, FT2-A | Is a correct answer taken up when it is delivered in override, declarative, benign or quoted form? FT2-A (CPU): do answer-CE agents use retrieved evidence less on clean inputs? |
 | `probes/plausible/` | FT2-C | Is a plausible wrong answer adopted more in override form than in declarative form? |
 | `verify_7b/` | B1 | Released Search-R1 7B on MuSiQue: content channel, instruction channel and recovery. Five conditions, three variants: native, verification prompt, forced extra search. |
-| `killcheck/` | FT1 | Do the released Search-R1 3B and 7B search more than once on open-corpus multi-hop questions (MuSiQue-pool)? |
+| `search_counts/` | FT1 | Do the released Search-R1 3B and 7B search more than once on open-corpus multi-hop questions (MuSiQue-pool)? |
 | `training/` | | Answer-CE training adapter for the 15 trained 3B agents (5 arms x 3 seeds) on SkyRL's Search-R1 recipe. |
 
-Where each study appears in the manuscript (`docs/sarra.pdf`): `confirmation/` in Sections 5.1 to 5.3 and Appendix C; `probes/` as the development results of Section 5.2 and Appendix D; `benign_controls/` in Section 5.3; `other_wrong/` only through the judge calibration of Section 4.3; `verify_7b/` in Section 5.4 and Appendix E; `killcheck/` in Section 4.5; `training/` in Section 4.1 and Appendix B. The study labels (E1-E3, FT1, FT2, B1) are internal names used in file names and protocols.
+Where each study appears in the manuscript (`docs/sarra.pdf`): `confirmation/` in Sections 5.1 to 5.3 and Appendix C; `probes/` as the development results of Section 5.2 and Appendix D; `benign_controls/` in Section 5.3; `other_wrong/` only through the judge calibration of Section 4.3; `verify_7b/` in Section 5.4 and Appendix E; `search_counts/` in Sections 4.5 and 5.4; `training/` in Section 4.1 and Appendix B. The study labels (E1-E3, FT1, FT2, B1) are internal names used in file names and protocols.
+
+`quota_rerun_3b_v1f` is the name of the training run that produced the 15 trained 3B agents (five configurations, three seeds); it appears in protocol paths and model names.
 
 ## Files to read first
 
@@ -52,7 +54,7 @@ The scripts find their inputs through the protocol and through their own locatio
 $SARRA_WORKSPACE/
   studies/<study>/protocol.json     copy of <directory>/protocol_public.json
   studies/<study>/source/           copy of <directory>; use a copy, not a symlink, because scripts resolve their own path
-  data/hub/                         Hugging Face cache for the released Search-R1 checkpoints (see verify_7b/, killcheck/)
+  data/hub/                         Hugging Face cache for the released Search-R1 checkpoints (see verify_7b/, search_counts/)
 ```
 
 | Directory | `<study>` |
@@ -63,7 +65,7 @@ $SARRA_WORKSPACE/
 | `probes/gold/` | `suppression_signature_v1` |
 | `probes/plausible/` | `suppression_signature_v1c` |
 | `verify_7b/` | `verify_7b_musique_v1` |
-| `killcheck/` | `multisearch_killcheck_v1` |
+| `search_counts/` | `multisearch_killcheck_v1` |
 
 For example:
 
@@ -78,13 +80,14 @@ Other studies' paths that appear in the protocols, such as `studies/extension_sp
 
 ## What is not included
 
-The release does not include the 15 trained 3B checkpoints, the evaluation traces, the HotpotQA split files (training pool, development split, test splits) or the support-title labels. The 3B studies (`confirmation`, `benign_controls`, `other_wrong`, `probes`) and `training` therefore document the procedure and run only where those assets exist. The 7B study (`verify_7b`) and the kill check (`killcheck`) need only public assets: the released Search-R1 checkpoints, MuSiQue and e5-base-v2.
+The release does not include the 15 trained 3B checkpoints, the full evaluation traces, the HotpotQA training and development split files or the support-title labels. The 3B studies (`confirmation`, `benign_controls`, `other_wrong`, `probes`) and `training` therefore document the procedure and run only where those assets exist. Two exceptions: the per-pair outcomes of the confirmatory test split for Clean GRPO, Random injection and Random + answer CE, with the question ids and plausible wrong answers, are in `results/`, and `confirmation/scripts/reanalyze_outcomes.py` re-runs the four primary contrasts from them and checks that the decisions match. The 7B study (`verify_7b`) and the search-count study (`search_counts`) need only public assets: the released Search-R1 checkpoints, MuSiQue and e5-base-v2.
 
 These checks run from this release without private data:
 
 ```
-python -B killcheck/test_msq.py <out>/cpu_tests.json             # needs MUSIQUE_DIR
-python -B verify_7b/test_b1.py <workspace>/studies/verify_7b_musique_v1   # needs MUSIQUE_DIR and the installed killcheck
+python -B confirmation/scripts/reanalyze_outcomes.py                      # numpy only; reads and writes ../results
+python -B search_counts/test_msq.py <out>/cpu_tests.json             # needs MUSIQUE_DIR
+python -B verify_7b/test_b1.py <workspace>/studies/verify_7b_musique_v1   # needs MUSIQUE_DIR and the installed search-count study
 python -B confirmation/scripts/test_analysis_e3.py <study_dir> <scratch>  # synthetic traces; <study_dir> holds protocol_draft.json
 python -B other_wrong/scripts/test_errors.py <study_dir>                  # synthetic traces
 ```

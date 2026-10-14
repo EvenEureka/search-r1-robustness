@@ -1,20 +1,23 @@
 cff-version: 1.2.0
 message: "If you use this code or these results, please cite the manuscript."
-title: "Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent"
+title: "Answer Supervision Teaches a Search Agent to Resist Wrong Instructions, Far More Than Wrong Claims"
 authors:
   - family-names: Lu
     given-names: Yiwen
     affiliation: University of Notre Dame
+    email: ylu37@nd.edu
 type: software
+license: Apache-2.0
 repository-code: "https://github.com/EvenEureka/search-r1-robustness"
 url: "https://eveneureka.github.io/search-r1-robustness/"
 preferred-citation:
   type: unpublished
-  title: "Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent"
+  title: "Answer Supervision Teaches a Search Agent to Resist Wrong Instructions, Far More Than Wrong Claims"
   authors:
     - family-names: Lu
       given-names: Yiwen
       affiliation: University of Notre Dame
+      email: ylu37@nd.edu
   year: 2026
   notes: "Manuscript"
   url: "https://eveneureka.github.io/search-r1-robustness/sarra.pdf"

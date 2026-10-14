@@ -8,6 +8,14 @@ run
 bibtex build/sarra > build/bibtex.log
 run
 run
+# Repeat until cross-references are stable.
+for _ in 1 2 3; do
+  grep -q "Rerun to get cross-references right" build/sarra.log || break
+  run
+done
 cp build/sarra.pdf ../docs/sarra.pdf
+# Earlier links to the manuscript point at these names.
+cp build/sarra.pdf ../docs/emnlp-manuscript.pdf
+cp build/sarra.pdf ../docs/manuscript.pdf
 grep -E "Warning|undefined|Overfull" build/sarra.log | grep -v "Font shape" || true
 echo "wrote docs/sarra.pdf"

@@ -1,0 +1,8 @@
+# Inference studies that run from public assets (sarra/verify_7b, sarra/search_counts), on CUDA GPUs.
+# Versions as recorded in the runs.
+torch==2.11.0
+transformers==5.13.0
+rank-bm25==0.2.2
+numpy>=2.2
+pyarrow
+huggingface_hub
