@@ -1,0 +1,6 @@
+
+
+<information>Doc 1(Title: {title_1}) {text_1}
+Doc 2(Title: {title_2}) {text_2}
+Doc 3(Title: {title_3}) {text_3}</information>
+

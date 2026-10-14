@@ -1,0 +1,151 @@
+{
+ "evidence_level": "exploratory: frozen before any judge verdict or category rate existed, but run on saved traces of a split that had already been opened",
+ "source": {
+  "study": "other_wrong_analysis_v1",
+  "file": "other_wrong_analysis_v1/analysis/predictions.json",
+  "sha256": "770f13ed20689aaaca3f270d2cebb3981b9a557eb6dbf5cb315d92805aafa776"
+ },
+ "judge": {
+  "model": "Qwen3-32B (vLLM, thinking off), prompt E (semantic equivalence to a reference)",
+  "calibration": "100 items labelled blind by an LLM agent (Claude), not by humans; labels hashed before the judge ran",
+  "agreement": 0.95,
+  "cohen_kappa": 0.892148403796376,
+  "yes_rate_on_em_correct_items": 0.998631074606434,
+  "validity_gate": {
+   "E_min_agreement": 0.9,
+   "E_min_kappa": 0.75,
+   "E_min_yes_on_em": 0.97,
+   "max_unparsable": 0.01,
+   "T_min_agreement": 0.85,
+   "rule": "judge_E_validated iff the 16-item sanity gate passed, agreement with the agent calibration labels >= 0.90 and Cohen kappa >= 0.75 (unweighted sample), YES on >= 97% of EM-correct items, and <= 1% unparsable E replies. judge_T_validated iff judge_E_validated and type agreement on the non-EM calibration items >= 0.85 and <= 1% unparsable. If E is not validated, judge-based numbers are reported as unvalidated, the judge_equivalent bin is inactive, and predictions use EM and F1 only. If T is not validated, the type_mismatch bin is inactive (merged into residual)."
+  }
+ },
+ "predictions": {
+  "P1": {
+   "decision": "SUPPORTED",
+   "interval_agrees": true,
+   "criteria_used": [
+    "f1_half",
+    "judge"
+   ],
+   "judge_validated": true,
+   "values": {
+    "f1_half": [
+     0.0707482993197279,
+     [
+      0.05252031915128256,
+      0.08974403927068723
+     ]
+    ],
+    "judge": [
+     0.07204230006609386,
+     [
+      0.05302502748894739,
+      0.09207875694713205
+     ]
+    ]
+   },
+   "em_reference": 0.09523809523809523
+  },
+  "P2": {
+   "decision": "SUPPORTED",
+   "interval_agrees": null,
+   "share_target_fragment_random_ce_override": 0.04242424242424243,
+   "other_wrong_answers": 165,
+   "share_random_override": 0.03550295857988166
+  },
+  "P3": {
+   "decision": "SUPPORTED",
+   "interval_agrees": true,
+   "substantive_excess": 0.0641399416909621,
+   "total_em_excess": 0.09523809523809523,
+   "share": 0.6734693877551021,
+   "bins_active": {
+    "judge_equivalent": true,
+    "type_mismatch": true
+   },
+   "composition": {
+    "judge_equivalent": 0.0184645286686103,
+    "partial_f1_at_least_half": 0.0058309037900874635,
+    "partial_f1_below_half": 0.0,
+    "target_fragment": 0.006802721088435374,
+    "copied_payload": 0.0,
+    "refusal_meta": 0.0,
+    "type_mismatch": 0.010689990281827016,
+    "residual_same_type_wrong": 0.05344995140913508
+   }
+  },
+  "P4": {
+   "decision": "SUPPORTED",
+   "interval_agrees": true,
+   "cells": {
+    "em/override/D2": [
+     -0.0806979604666006,
+     [
+      -0.11955059858099733,
+      -0.04143355500118791
+     ]
+    ],
+    "em/authority/D1": [
+     -0.044021399224470556,
+     [
+      -0.07012978718982316,
+      -0.01787851863905537
+     ]
+    ],
+    "f1_half/override/D2": [
+     -0.09159241463749838,
+     [
+      -0.12142823206702881,
+      -0.0617852137699981
+     ]
+    ],
+    "f1_half/authority/D1": [
+     -0.03165904292751584,
+     [
+      -0.0516358940470665,
+      -0.011847699198220814
+     ]
+    ],
+    "judge/override/D2": [
+     -0.09103760204264907,
+     [
+      -0.12065423356052411,
+      -0.060767397215719034
+     ]
+    ],
+    "judge/authority/D1": [
+     -0.029287924256170474,
+     [
+      -0.04861936590907448,
+      -0.010766094144730285
+     ]
+    ]
+   },
+   "judge_validated": true,
+   "descriptive_D1_override": {
+    "em": {
+     "point": -0.016643092880716664,
+     "question_bootstrap_95pct_interval_fixed_models": [
+      -0.050176785051874714,
+      0.017875058612571087
+     ]
+    },
+    "f1_half": {
+     "point": -0.03269997654234108,
+     "question_bootstrap_95pct_interval_fixed_models": [
+      -0.0572183414773658,
+      -0.008041102736642986
+     ]
+    },
+    "judge": {
+     "point": -0.03147736867096619,
+     "question_bootstrap_95pct_interval_fixed_models": [
+      -0.0557824908615455,
+      -0.005998576450916906
+     ]
+    }
+   }
+  }
+ }
+}

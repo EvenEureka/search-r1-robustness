@@ -1,97 +1,107 @@
-# SARRA
+# Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent
 
-Search-Agent Reliability under Retrieval Attacks
+Yiwen Lu, University of Notre Dame. Manuscript, 2026.
 
-A research project website by **Yiwen Lu · University of Notre Dame** accompanying *SARRA: Attack Resistance Is Only Half the Answer for Search Agents*.
+**[Paper (PDF)](docs/sarra.pdf)** · [Project page](https://eveneureka.github.io/search-r1-robustness/) · [Code](sarra/) · [Result files](results/)
 
-The homepage uses a compact academic reading layout: a centered title and author block, the manuscript abstract, a research flow diagram, navy and teal accents, light/dark themes, a continuous sequence of all three result charts, all 15 seed runs, the 6,000 paired answers sorted into three kinds of change (wrong to correct, target to another wrong answer, correct to wrong) with one saved case of each kind, and the 3B/7B development and paired evidence results. It is a working manuscript, not an accepted or peer-reviewed paper. The study's historical training/export inconsistency, and the corrected rerun it calls for, are stated in the scope section alongside the results.
+## Question
 
-## Read locally
+Defenses against injected text in retrieved documents are usually judged by attack success and clean accuracy.
+Those two numbers cannot separate an agent that has learned to ignore instructions inside documents (a *gate*) from
+one that checks what documents claim (*verification*), or from one that discounts any inserted text (*suppression*).
+The three come apart on two inputs that standard attack suites leave out: a wrong answer stated as a plain fact, and a
+correct answer delivered as an instruction. We ask which of them training against injection teaches a
+reinforcement-learned search agent.
 
-Open `docs/index.html`, or serve the site:
+![Payload adoption by form and content](docs/assets/gate.png)
+
+## Findings
+
+1. **Answer supervision acts as a gate on instruction-shaped payloads** (confirmatory). We trained Search-R1-style
+   Qwen2.5-3B agents with GRPO under retrieval injection, with and without a cross-entropy loss on the correct answer
+   (answer CE), three seeds each. On 1,000 unseen HotpotQA questions, answer CE cut adoption of the attack target from
+   32.0% to 1.6% of the answers the agents otherwise got right, and adoption of a plausible wrong answer delivered as
+   an instruction from 68.3% to 33.5%. The same wrong answer stated as a fact went from 20.7% to 17.7%, a small
+   partial transfer (−3.0 points, 95% CI [−5.8, −0.1]).
+2. **It keeps most correct inserted content and removes most of the attack's other damage** (confirmatory). A
+   correct answer delivered as an instruction was used on 92.1% vs 88.9% of the questions the agents otherwise
+   missed (−3.2 points [−5.0, −1.5], inside the pre-set 5-point margin). Relative to a benign instruction of the
+   same form, the override's excess of other wrong answers changed by −8.4 points [−12.0, −4.7]. The size of the gate
+   varied widely across the three training seeds (target adoption fell by 57.8, 7.6 and 23.6 points).
+3. **A released multi-search agent shows neither channel open much** (development evidence). The released
+   Search-R1 7B agent searches 2.67 times per MuSiQue question. A wrong answer stated as a fact changed 1.7% of the
+   answers it otherwise got right, and phrasing the same answer as an instruction added 5.9 points (47.5 points for
+   the 3B agents without answer CE). It used a correct inserted answer on 58.9% of the questions it otherwise missed.
+   This comes from a released model with one inserted passage and answer-level misinformation.
+
+Evidence levels: the four primary contrasts on the 3B test split are confirmatory. Their analysis protocol was
+committed by hash before the split was opened, they are scored by exact match, and they are Holm-corrected; the
+intervals above resample questions with the six trained models held fixed. Everything else is labelled development
+or exploratory in the paper and in each file under `results/`.
+
+## Reproduce
+
+Figure, tables and every number in the paper, from the result files in this repository:
 
 ```sh
-python -m http.server 8765 --bind 127.0.0.1 --directory docs
+python -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt
+python paper/make_assets.py      # writes paper/figures, paper/generated, docs/assets
+bash paper/build.sh              # needs pdflatex and bibtex; writes docs/sarra.pdf
 ```
 
-Visit `http://127.0.0.1:8765/`. The current paper is `docs/emnlp-manuscript.pdf`; its LaTeX and evidence bundle is `docs/emnlp-source.zip`. The earlier technical report remains available as `docs/report.html` and `docs/manuscript.pdf`.
-
-The site uses plain HTML, CSS, SVG, and JavaScript. All assets and reduced evidence are local. There is no backend, tracking, external font request, live model call, or GPU dependency. The illustration is conceptual; its side-by-side scores display saved three-seed means. Selected case answers come from saved trajectories. All results, cases, and scope details appear in reading order without selecting tabs or opening sections. Navigation only jumps to sections. The interface supports small screens, keyboard navigation, reduced motion, and full reading without JavaScript.
-
-## Build
-
-`project_site.py` uses Python's standard library to regenerate the homepage and integrity manifest:
+The released 7B study and the search-count check use only public assets (the released Search-R1 checkpoints,
+MuSiQue, e5-base-v2) and need two GPUs:
 
 ```sh
-python project_site.py
+export SARRA_WORKSPACE=$PWD/work SARRA_VERIFY_FROZEN=0
+export MUSIQUE_DIR=<snapshot dir of the HF dataset dgslibisey/MuSiQue> E5_DIR=<snapshots dir of intfloat/e5-base-v2>
+for pair in killcheck:multisearch_killcheck_v1 verify_7b:verify_7b_musique_v1; do
+  src=${pair%%:*}; study=$SARRA_WORKSPACE/studies/${pair#*:}
+  mkdir -p $study && cp -r sarra/$src $study/source && cp sarra/$src/protocol_public.json $study/protocol.json
+done
+cd $SARRA_WORKSPACE
+huggingface-cli download PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-3b-em-grpo \
+    --revision d4d2f71e39ff3e0ed4def1e8f860b87d9f6bfac7 --cache-dir data/hub
+huggingface-cli download PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-grpo-groupsize3-v0.2 \
+    --revision 948503c0691ec29525f20bd7d5dbc51ed5aa7e70 --cache-dir data/hub
+CUDA_VISIBLE_DEVICES=0,1 python -B studies/multisearch_killcheck_v1/source/run_job.py   # search counts, 300 questions
+CUDA_VISIBLE_DEVICES=0,1 python -B studies/verify_7b_musique_v1/source/run_b1_job.py   # 7B probes, 1,000 questions
 ```
 
-For a full rebuild of the legacy report, figures, tables, and homepage, use Python 3.10 or newer:
+Each run ends with its frozen analysis (`analysis/summary.txt`). Training and evaluating the 3B agents needs the
+HotpotQA splits and the trained weights, which are not included; [`sarra/training/README.md`](sarra/training/README.md)
+gives the SkyRL configuration and the command for one run, and [`sarra/README.md`](sarra/README.md) describes every
+study directory, the environment and what each file does.
 
-```sh
-python -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python build_report.py
-```
+## Repository map
 
-The full builder verifies aggregate means, sample standard deviations, primary seed metrics, condition denominators, and supervision totals. It does not retrain models or recompute bootstrap intervals from raw predictions. The current EMNLP-style PDF is a separate LaTeX build supplied in `emnlp-source.zip`; these website commands preserve it.
-
-| Source | Purpose |
+| Path | Contents |
 | --- | --- |
-| `templates/index.html` | Homepage structure and narrative |
-| `project_site.py` | Frozen-data preparation, static rendering, citation, release hashes |
-| `docs/assets/project.css` | Academic visual design, navy/teal themes, responsive layout, and components |
-| `docs/assets/project.js` | Light/dark theme and citation copying; all evidence is statically rendered |
-| `manuscript.json`, `build_report.py` | Earlier technical report and verified tables |
-| `verify_site.py` | Browser checks for continuous visibility, data, links, and responsive layout |
+| `paper/` | LaTeX source, prompts shown in the appendix, `make_assets.py` (figure, tables, number macros), `build.sh` |
+| `results/` | small JSON files the paper reads, each with its source study, sha256 and evidence level |
+| `sarra/confirmation/` | 3B evaluation harness: payload construction, episode loop, scorer, plausible-wrong-answer rule, confirmatory analysis |
+| `sarra/benign_controls/` | control ladder on development questions (neutral line, fluent sentence, benign instruction) |
+| `sarra/probes/` | development probes: gold answer and plausible wrong answer in instruction and declarative form |
+| `sarra/other_wrong/` | decomposition of non-target wrong answers and the LLM-judge calibration |
+| `sarra/verify_7b/` | released Search-R1 7B on MuSiQue: probes, verification prompt, forced extra search, recovery |
+| `sarra/killcheck/` | how often released Search-R1 3B and 7B search |
+| `sarra/training/` | answer-CE training adapter and configuration for SkyRL's Search-R1 recipe |
+| `docs/` | project page (GitHub Pages) and the PDF |
 
-## Browser validation
+Not included: trained weights, evaluation traces and the HotpotQA split files.
 
-With the local server running:
+## Citation
 
-```sh
-.venv/bin/python -m pip install -r requirements-dev.txt
-.venv/bin/python -m playwright install chromium
-.venv/bin/python verify_site.py --url http://127.0.0.1:8765/ --output /tmp/searchr1-site-review
+```bibtex
+@misc{lu2026sarra,
+  title  = {Answer Supervision Gates Injected Instructions but Barely Touches Injected Misinformation in a Single-Search Agent},
+  author = {Lu, Yiwen},
+  year   = {2026},
+  note   = {Manuscript},
+  url    = {https://github.com/EvenEureka/search-r1-robustness}
+}
 ```
 
-Checks cover both hero configurations, 15 chart means and 45 seed values, 18 case answers, four paired outcomes, all 14 cross-checkpoint rows and three paired evidence contrasts, no hidden panels or collapsed sections, local links, clipboard, persistent theme switching, reduced motion, keyboard entry, complete no-JavaScript content, and widths 320, 390, 768, and 1440 pixels. Screenshots and a validation JSON are written to the selected output directory.
-
-## Evidence
-
-The primary evaluation includes five training configurations, three seeds, and 1,000 held-out HotpotQA questions under five conditions: 75,000 trajectories. These are repeated evaluations of the same questions, not 75,000 independent examples. Random injection plus answer supervision scores 33.37% attacked exact match versus 23.30% for random injection alone in the evaluated historical exports; this comparison does not isolate a causal mechanism.
-
-| File under `docs/data/` | Contents |
-| --- | --- |
-| `primary.json`, `aggregate.csv` | Primary summaries and three-seed means/SDs |
-| `seeds.csv` | All 15 primary runs |
-| `conditions.csv` | All 75 run/condition summaries |
-| `costs.csv`, `training-accounting.json` | Exposure, tokens, timing, and allocated GPU-hours |
-| `protocol.json`, `model-hashes.json` | Reduced frozen protocol and evaluated export identity |
-| `cases.json` | Selected question text and saved trajectory excerpts |
-| `paired-analysis.json` | Paired outcome counts and analysis scope |
-| `extension.json` | Separate context controls and transfer summaries |
-| `exploratory-diagnostics.json` | Separate exploratory diagnoses and limitations |
-| `provenance.json` | Source evidence hashes |
-| `cross-model-development.json` | Author 3B/7B results, all seven conditions on development256 |
-| `evidence-branch-7b.json` | New/repeated evidence, eligible and all-question outcomes, paired CIs and costs |
-| `development-provenance.json` | Development protocols, source hashes, checkpoint identities and separate training status |
-
-`docs/release-sha256.json` lists integrity hashes for the static release. Rates in CSVs are fractions; displayed percentages multiply them by 100. Search counts and costs are not percentages. Seed 1–3 retain their original identifiers in the data. All seeds remain available; no favorable seed is relabeled as a configuration.
-
-This reporting release includes selected case questions and excerpts, but excludes the full raw trajectory archive, complete benchmark, model weights, optimizer states, and standalone training environment.
-
-## Publish on GitHub Pages
-
-Repository: `EvenEureka/search-r1-robustness`. Project site: https://eveneureka.github.io/search-r1-robustness/. The existing site is published through GitHub Pages; each release is checked against its content hashes.
-
-1. Create the public repository and initialize its `main` branch. Grant the connected GitHub app access if using it to upload.
-2. Upload this directory's contents to the repository root, preserving `docs/` and `templates/`.
-3. In **Settings → Pages**, choose **Deploy from a branch**, **main**, and **/docs**.
-4. Verify the deployed homepage, paper, source download, and interactions.
-
-The built files are served directly; no remote build or API key is needed. See [GitHub's publishing-source documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
-
-## New development evidence
-
-The author 7B checkpoint has 1.95% override-target hit but 51.17% exact match (55.86% clean). At observed second-search states, new BM25 retrieval improves accuracy over repeated first-search clean evidence by 9.4–11.9 points. This comparison uses 564 condition-question states sharing 256 opened development questions, not 564 independent questions. The site presents conditional and all-question denominators separately. No new training method, size-only effect, or learned verification is inferred. The separate 7B numerical check passed, but the first GRPO smoke failed before updates; no 7B training-effect comparison is complete.
+An earlier version of this repository, with a different framing of the project, is kept at the tag
+`v1-2026-10-site`.

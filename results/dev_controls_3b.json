@@ -1,0 +1,123 @@
+{
+ "evidence_level": "development: 256 opened development questions, all 15 trained agents; predictions frozen before inference",
+ "source": {
+  "study": "benign_controls_v1",
+  "file": "benign_controls_v1/analysis/predictions_primary.json",
+  "sha256": "4751cd5686052ea68825757d6babb48ab9a1babbbde7132681236a7b9f556239"
+ },
+ "source_full": {
+  "study": "benign_controls_v1",
+  "file": "benign_controls_v1/analysis/primary.json",
+  "sha256": "172cb50eaecb5b6087b5f8b9e29dd61e5be7588875565b51aad6623c77c72f31"
+ },
+ "predictions": {
+  "P1": {
+   "decision": "SUPPORTED",
+   "interval_agrees": false,
+   "excess_vs_benign_instruction": [
+    0.04512372634643377,
+    [
+     0.017612150141418256,
+     0.07388459861405905
+    ]
+   ],
+   "excess_vs_neutral": [
+    0.06550218340611355,
+    [
+     0.037388814915607416,
+     0.09651151123350898
+    ]
+   ],
+   "ratio": 0.6888888888888888,
+   "margin_xb_minus_half_xn": [
+    0.012372634643376998,
+    [
+     -0.007138548938993977,
+     0.0310864593929323
+    ]
+   ]
+  },
+  "P2": {
+   "decision": "SUPPORTED",
+   "interval_agrees": true,
+   "fluent_minus_neutral_other_wrong": [
+    0.002183406113537116,
+    [
+     -0.011317994148204773,
+     0.015272853535353534
+    ]
+   ]
+  },
+  "P3": {
+   "decision": "SUPPORTED",
+   "interval_agrees": null,
+   "configurations_positive": [
+    "clean",
+    "random_matched",
+    "paired",
+    "paired_answer",
+    "random_answer"
+   ],
+   "values": {
+    "clean": [
+     0.06338028169014086,
+     [
+      0.01532420812494516,
+      0.11149857117790088
+     ]
+    ],
+    "random_matched": [
+     0.07885304659498207,
+     [
+      0.028268551236749116,
+      0.1297723315923396
+     ]
+    ],
+    "paired": [
+     0.01792114695340502,
+     [
+      -0.033336120401337786,
+      0.06920415224913495
+     ]
+    ],
+    "paired_answer": [
+     0.04230769230769231,
+     [
+      0.0035714285714285713,
+      0.08664595578363213
+     ]
+    ],
+    "random_answer": [
+     0.022058823529411756,
+     [
+      -0.028573988735279054,
+      0.07569721115537849
+     ]
+    ]
+   }
+  }
+ },
+ "control_selection_for_confirmation": {
+  "rule": "For the fresh_test_v2 confirmatory draft (E3), the control used for the excess non-target loss is the benign control (neutral, benign_instruction or fluent_irrelevant; quoted_target is excluded because it names the target) with the largest pooled other-wrong rate on clean-correct pairs over all 15 exports on development256 (EM categories), i.e. the one giving the smallest, most conservative override excess. Ties go to benign_instruction.",
+  "pooled_other_wrong_rates": {
+   "neutral": 0.06186317321688501,
+   "benign_instruction": 0.08224163027656478,
+   "fluent_irrelevant": 0.06404657933042213
+  },
+  "selected": "benign_instruction"
+ },
+ "keys_in_full_file": [
+  "analysis",
+  "configurations",
+  "e3_control_selection",
+  "missing_runs",
+  "predictions",
+  "predictions_status",
+  "protocol_sha256",
+  "questions",
+  "reproduction_check",
+  "sources_sha256",
+  "split",
+  "stage"
+ ]
+}

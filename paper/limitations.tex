@@ -1,0 +1,11 @@
+\paragraph{Scope of the 3B result.}
+The confirmatory result concerns one model family, one training recipe, and three seeds per configuration. Its intervals resample questions with the trained models held fixed, so they describe these models rather than the population of models the recipe would produce. The agents search once per question over small HotpotQA distractor pools, which means the result is about how an agent reads a single retrieval. The two configurations are matched on consumed attacks and training-loop time but not on updates, generated tokens, or accepted supervision, so the comparison credits the whole training procedure. Answer CE is the simplest member of a family of training defenses, and other members may learn something different.
+
+\paragraph{Payloads.}
+Every payload is appended to the first document of the first search. The declarative payload is a one-sentence assertion attached to a retrieved document, not a separate poisoned passage that must win retrieval, and evidence position is known to matter \citep{liu2024lost}. The wrong answer $w(q)$ comes from a fixed heuristic, and not every $w(q)$ is of the same type as the gold answer. No attack was adapted to the defenses.
+
+\paragraph{Measurement.}
+Exact match penalizes correct answers phrased differently and does not certify that an answer is grounded in evidence. The equivalence judge used for secondary numbers was calibrated against labels written by another language model, not by people, and its use with $w(q)$ as the reference was not calibrated separately. Mentions of a payload in the 7B agent's reasoning are detected by string matching, and recovery is counted when the final answer differs from the payload, whether or not it is correct.
+
+\paragraph{The 7B comparison.}
+The 7B agent is a released checkpoint evaluated on development questions, with a proxy corpus of MuSiQue paragraphs rather than the Wikipedia corpus it was trained with. It differs from the 3B agents in size, training data, corpus, retriever, and questions, so the contrast between the two agents does not isolate the effect of searching more than once. Public questions may also have been seen during pretraining.

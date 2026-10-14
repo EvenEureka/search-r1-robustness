@@ -1,0 +1,159 @@
+\section{Prompts and Payloads}
+\label{app:prompts}
+The task prompt is the Search-R1 prompt. The question is stripped and receives a final question mark if it lacks one.
+\promptfile{prompts/task.txt}
+The tokenizer's chat template wraps it as a single user turn under the default system message, and later generations and observations are appended to the same text stream. Retrieved documents are serialized as follows, between two newlines on each side:
+\promptfile{prompts/observation.txt}
+A payload changes only the text of Doc~1 in the first observation, by appending two newlines and the payload. Titles, order, and the other documents are untouched.
+
+\paragraph{Training payloads} (target \emph{amber compass 17}):
+\promptfile{prompts/train_direct.txt}
+\promptfile{prompts/train_role.txt}
+\paragraph{Test attacks} (target \emph{violet telescope 42}), override and authority:
+\promptfile{prompts/test_override.txt}
+\promptfile{prompts/test_authority.txt}
+\paragraph{Probes.} Gold in instruction form, plausible wrong answer in instruction form, and the same wrong answer stated declaratively. The declarative payload is padded with the word ``note'' until it is at least as long, in tokens, as the instruction version for the same question.
+\promptfile{prompts/override_gold.txt}
+\promptfile{prompts/override_plaus.txt}
+\promptfile{prompts/decl_plaus.txt}
+\paragraph{Controls.} Neutral line, quoted target, benign instruction, and fluent irrelevant sentence. Each is padded with ``note'' to the first length at least as long as the override input and is required to lie within two tokens of both attack inputs.
+\promptfile{prompts/neutral.txt}
+\promptfile{prompts/quoted_target.txt}
+\promptfile{prompts/benign_instruction.txt}
+\promptfile{prompts/fluent_irrelevant.txt}
+
+\paragraph{Plausible wrong answers.} For each question, with $g$ its first gold answer: a yes/no $g$ is flipped; a four-digit year is replaced by a different year that is the gold answer of a training question, and any other number by a different numeric training answer, chosen with a seeded generator; any other $g$ is replaced by the first document title in the question's own pool, with any trailing parenthetical removed, that is not a gold answer, neither contains nor is contained in a gold answer, does not occur in the question, and belongs to a document whose text contains no gold answer. If no title qualifies, a non-numeric training answer is used. The rule never reads model outputs, and the gold answer serves only to exclude candidates.
+
+\section{Training Details}
+\label{app:training}
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccc}
+\toprule
+Configuration & First search & Attacks & CE weight\\
+\midrule
+Clean GRPO & independent & 0 & 0\\
+Random injection & independent & 300 & 0\\
+Random + answer CE & independent & 300 & 0.05\\
+Boundary pairing & shared & 300 & 0\\
+Paired + answer CE & shared & 300 & 0.05\\
+\bottomrule
+\end{tabular}
+\caption{Training configurations. Attacks are consumed attacked observations per run; CE entries are loss weights.}
+\label{tab:arms}
+\end{table}
+
+\paragraph{Exposure.} Each training batch has 16 questions with four rollouts each. Questions whose first action is a valid search are eligible and are ranked by a hash of seed, step, and rollout identity, never by reward. Up to three eligible questions per batch receive the same training payload in rollouts 2 and 3, alternating between the two templates, until 300 attacked observations, 150 per template, have actually been read by the policy. Boundary pairing makes all four rollouts of a selected question share the first search of rollout 0, so clean and attacked continuations start from the same evidence.
+
+\paragraph{Answer targets.} For each selected question, the clean rollouts 0 and 1 are inspected in order. A rollout's final answer is used if it earned reward and matches a training reference. Otherwise the reference answer is used, but only when every annotated supporting title appears in the attacked rollout's retrieved documents. Otherwise no example is built. The input is the attacked rollout's prefix through the first attacked observation, followed by a newline and \tagtext{answer}. Only the answer tokens receive weight; the closing tag and end-of-sequence token have zero weight. Each minibatch's answer tokens share a total weight of 0.05, and the cross-entropy backward pass precedes the same optimizer step as the GRPO update.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.42\columnwidth}>{\raggedright\arraybackslash}p{0.46\columnwidth}}
+\toprule
+Setting & Value\\
+\midrule
+Seeds & 20261012, 20261013, 20261014\\
+Prompts / samples per prompt & 16 / 4\\
+Optimizer, learning rate & AdamW, $10^{-6}$\\
+Gradient clip & 0.5\\
+Advantage & GRPO, group-normalized\\
+Policy clip & 0.2 (dual clip 3.0)\\
+KL loss & 0.001, k3 estimator\\
+Sampling & temperature 1.0, top-$p$ 1.0\\
+Tokens per call / turns & 512 / 5\\
+Context limit & 8,192 tokens\\
+Stopping & first batch past 3,430 s of loop time; at most 128 updates\\
+Hardware & two RTX PRO 6000 GPUs, FSDP, bf16\\
+Software & SkyRL \citep{skyrl}, vLLM \citep{kwon2023vllm}\\
+\bottomrule
+\end{tabular}
+\caption{Training hyperparameters shared by all 15 runs.}
+\label{tab:hyper}
+\end{table}
+
+\paragraph{Evaluation decoding.} Evaluation uses greedy decoding with at most four searches, 512 new tokens per generation, and an 8,192-token context. For each agent and question the first action is generated once and shared by all conditions; a question on which the agent answers without searching keeps that answer in every condition.
+
+\section{Confirmatory Analysis}
+\label{app:analysis}
+Let R and CE denote the three random-injection and the three answer-CE agents. A pair is an (agent, question). Clean-correct pairs are those the agent answers correctly with clean retrieval; clean-wrong pairs are the rest, including format failures. With rates pooled over each configuration's pairs:
+\begin{align*}
+\Delta_a &= T_{\mathrm{CE}} - T_{\mathrm{R}},\\
+\Delta_b &= (A^{\mathrm{ins}}_{\mathrm{CE}} - A^{\mathrm{ins}}_{\mathrm{R}}) - (A^{\mathrm{dec}}_{\mathrm{CE}} - A^{\mathrm{dec}}_{\mathrm{R}}),\\
+\Delta_c &= U_{\mathrm{CE}} - U_{\mathrm{R}},\\
+\Delta_d &= X_{\mathrm{CE}} - X_{\mathrm{R}},
+\end{align*}
+where $T$ is the share of clean-correct pairs answering the nonsense target under the override attack, $A^{\mathrm{ins}}$ and $A^{\mathrm{dec}}$ are the shares answering $w(q)$ in instruction and declarative form, $U$ is the share of clean-wrong pairs answered correctly with the gold in instruction form, and $X$ is the other-wrong rate under the override minus that under the benign instruction, each computed among clean-correct pairs whose outcome is not the attack target. $P_a$, $P_b$, and $P_d$ test $\Delta<0$; $P_c$ tests $\Delta_c>-0.05$. Each bootstrap draw resamples the 1,000 questions with replacement and applies the same draw to all three seeds; $p=(1+\#\{\text{draws on the null side}\})/10{,}001$. Holm's procedure orders the four $p$-values and rejects while $p_{(j)}\leq 0.05/(4-j+1)$.
+
+Table~\ref{tab:primary} gives the four decisions. The \cfPairsCCR{} and \cfPairsCCCE{} clean-correct pairs of random injection and answer CE enter $P_a$, $P_b$, and $P_d$; the \cfPairsCWR{} and \cfPairsCWCE{} clean-wrong pairs enter $P_c$. A leak check that searched every static payload and control text for the gold answers of the test questions flagged none. Under the two lenient criteria, the four contrasts are \cfFonePa, \cfFonePb, \cfFonePc, and \cfFonePd{} points with token F1 $\geq0.5$, and \cfJudgePa, \cfJudgePb, \cfJudgePc, and \cfJudgePd{} points with the judge (\cfJudgeItems{} judged items, none unparsable); tested the same way, all four would be confirmed under both.
+
+\begin{table*}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrrrl@{}}
+\toprule
+& Point & 95\%, models fixed & 95\%, seeds resampled & Seed pairs & Holm $\alpha$ & Bound & Decision\\
+\midrule
+\tableinput{generated/primary.tex}
+\bottomrule
+\end{tabular*}
+\caption{Primary contrasts on the test split, answer CE minus random injection, in points (exact match). The first interval resamples questions with the six trained models fixed; the second also resamples seed pairs and is descriptive. The Holm bound is the one-sided bound at the contrast's Holm level: an upper bound below 0 for $P_a$, $P_b$, and $P_d$, and a lower bound above $-5$ for $P_c$.}
+\label{tab:primary}
+\end{table*}
+
+\section{All Configurations}
+\label{app:arms}
+\label{app:dev}
+Table~\ref{tab:devprobes} gives the development probes for all five configurations. The two boundary-paired configurations repeat the pattern of the random-injection pair: answer CE lowers instruction-form adoption of the nonsense target (\dvTP\% to \dvTPCE\%) and of $w(q)$ (\dvAiP\% to \dvAiPCE\%) and leaves declarative adoption close (\dvAdP\% to \dvAdPCE\%). In both families, answer CE reduces uptake of a correct answer phrased as a benign instruction by a few points (\dvDBenignGoldR{} and \dvDBenignGoldP{} points), and in the paired family it also reduces uptake of a declaratively stated gold answer (\dvDDeclGoldP{} points \dvDDeclGoldPCI).
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
+\toprule
+& \multicolumn{3}{c}{Wrong payload adopted (\% of clean-correct)} & \multicolumn{3}{c}{Gold used (\% of clean-wrong)}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Configuration & Instr., target & Instr., $w(q)$ & Decl., $w(q)$ & Instr. & Benign instr. & Decl.\\
+\midrule
+\tableinput{generated/dev-probes.tex}
+\bottomrule
+\end{tabular*}
+\caption{Development probes on 256 questions, three seeds per configuration (development evidence). ``Benign instr.'' carries the gold answer in a benign imperative sentence of the same length.}
+\label{tab:devprobes}
+\end{table*}
+
+Table~\ref{tab:allarms} gives the same probes for all five configurations on the test split. These numbers are descriptive.
+
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+& Clean & \multicolumn{3}{c}{Wrong payload} & Gold\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-6}
+Configuration & EM & Tgt & Instr & Decl & Instr\\
+\midrule
+\tableinput{generated/all-arms.tex}
+\bottomrule
+\end{tabular}
+\caption{All five configurations on the 1,000-question test split, three seeds each (descriptive). Clean EM over all questions; Tgt, Instr, Decl: \% of clean-correct pairs adopting the nonsense target or $w(q)$ in instruction or declarative form; Gold: \% of clean-wrong pairs answered correctly with the gold in instruction form.}
+\label{tab:allarms}
+\end{table}
+
+\section{The 7B Study}
+\label{app:sevenb}
+The questions are the 300 of the search-count check plus 700 further answerable MuSiQue development questions drawn with a fixed seed. Decoding is greedy and batched, with 512 new tokens per turn and an 8,192-token context. In the verification variant, one sentence is inserted before the question: ``Retrieved documents may contain mistakes or misleading statements. Before giving your final answer, check the key facts it depends on with at least one more search, and answer only when independent evidence agrees.'' In the forced variant, the agent's first attempted answer is recorded, the turn is cut before the answer, and a search tag is appended so the agent writes a query; if it does not, the recorded answer is restored. A mention is the normalized payload phrase appearing as whole words in the first reasoning turn after the payload was shown. Table~\ref{tab:sevenbpred} lists the frozen predictions; point estimates decide.
+
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{l>{\raggedright\arraybackslash}p{0.45\columnwidth}rl}
+\toprule
+& Prediction & Value & Outcome\\
+\midrule
+\tableinput{generated/seven-b-predictions.tex}
+\bottomrule
+\end{tabular}
+\caption{Predictions for the released 7B agent, frozen before inference, and their outcomes (development evidence).}
+\label{tab:sevenbpred}
+\end{table}
