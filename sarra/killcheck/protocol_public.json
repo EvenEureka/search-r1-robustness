@@ -1,0 +1,111 @@
+{
+  "public_redaction": {
+    "original_sha256": "9fb79e773cd3af454f598590945034acb51382356c66f5aa3965af06f46e27af",
+    "note": "Paths and scheduler fields redacted; the scientific content (conditions, payloads, predictions, primary contrasts, decision rules, analysis settings) is unchanged. A few free-text phrases that referred to other projects or to earlier internal discussions were reworded."
+  },
+  "version": "multisearch_killcheck_v1",
+  "status": "FROZEN_BEFORE_INFERENCE",
+  "purpose": "FT1-C/D of fatal_tests.md (pre-registration sha256 0822ecec046bf179d7788faf7ebbc4ed7d24a7f3b401c137ceabb890ac079c80). Kill check only; development data; no training; no HotpotQA sealed split; no model files written.",
+  "corpus": {
+    "name": "MuSiQue-pool",
+    "source": "dgslibisey/MuSiQue answerable v1.0 train+dev paragraphs (HF cache c8f4f8c9), de-duplicated by (title, paragraph_text)",
+    "n_paragraphs": 101962
+  },
+  "questions": {
+    "split": "MuSiQue answerable dev",
+    "n": 300,
+    "sampling": "sorted by id, random.Random(20261013).sample(.,300)",
+    "ids_sha256": "3126865f412752ec06d4e122bacaf2b8bfc52c3323512944ad144fc6b02bf1cb",
+    "hops": {
+      "2": 139,
+      "3": 105,
+      "4": 56
+    }
+  },
+  "models": {
+    "searchr1_3b": {
+      "repo": "PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-3b-em-grpo",
+      "revision": "d4d2f71e39ff3e0ed4def1e8f860b87d9f6bfac7",
+      "path": "data/hub/models--PeterJinGo--SearchR1-nq_hotpotqa_train-qwen2.5-3b-em-grpo/snapshots/d4d2f71e39ff3e0ed4def1e8f860b87d9f6bfac7",
+      "interface_files_sha256": {
+        "generation_config.json": "61c976d8443e6a7b4956b1847e4f970ab1ff5ad0db2b3ca3970b711c098c299f",
+        "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "config.json": "b27a7aadfdb9c5967ccb48edb034c6dc7edddc8c0600e9e9d47db3f445a39fcd",
+        "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+        "special_tokens_map.json": "6676f091c8bc4d1b50146427cfde92073402866b87b6e39223227931b70083e9",
+        "tokenizer_config.json": "a5dae0102f342a3b6bc2a4d03f430ed83666dcab8879c9ee44c08a3d9095132d",
+        "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    },
+    "searchr1_7b": {
+      "repo": "PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-grpo-groupsize3-v0.2",
+      "revision": "948503c0691ec29525f20bd7d5dbc51ed5aa7e70",
+      "path": "data/hub/models--PeterJinGo--SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-grpo-groupsize3-v0.2/snapshots/948503c0691ec29525f20bd7d5dbc51ed5aa7e70",
+      "interface_files_sha256": {
+        "config.json": "08ef4a77735c715635f38c0aa5bcb8939775130160ed11c701642f7b19446a1d",
+        "generation_config.json": "61c976d8443e6a7b4956b1847e4f970ab1ff5ad0db2b3ca3970b711c098c299f",
+        "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "model.safetensors.index.json": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be",
+        "special_tokens_map.json": "6676f091c8bc4d1b50146427cfde92073402866b87b6e39223227931b70083e9",
+        "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "tokenizer_config.json": "a5dae0102f342a3b6bc2a4d03f430ed83666dcab8879c9ee44c08a3d9095132d",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    }
+  },
+  "evaluation": {
+    "seed": 20261013,
+    "prompt": "Search-R1 native base_prompt (verbatim copy of confirmation_fresh_v1 common.py), chat template if present",
+    "topk": 3,
+    "max_searches": 8,
+    "max_new_tokens_per_turn": 512,
+    "max_context_tokens": 8192,
+    "decoding": "greedy",
+    "batch_size": 32,
+    "passes": [
+      [
+        "e5",
+        "clean"
+      ],
+      [
+        "e5",
+        "override"
+      ],
+      [
+        "bm25",
+        "clean"
+      ]
+    ],
+    "attack": "frozen test_override text, target violet telescope 42, appended to retrieved document 1 of the first search only; first assistant turn shared across passes",
+    "retrievers": {
+      "e5": "intfloat/e5-base-v2 (HF cache), fp16, query: / passage: prefixes, mean pooling, cosine",
+      "bm25": "numpy BM25, k1 0.9, b 0.4, lowercase \\\\w+ tokens"
+    }
+  },
+  "decision_rules": {
+    "GO": "mean searches >= 2.0 and share with >=2 searches >= 0.5 (e5 clean)",
+    "CONDITIONAL": "1.5 <= mean < 2.0",
+    "NO-GO": "mean < 1.5",
+    "applied_to": "each model separately"
+  },
+  "gpus": 2,
+  "storage": {
+    "expected_retained_bytes": "< 50 MB (traces, logs); e5 embeddings in GPU memory only; no model exports or checkpoints"
+  },
+  "limitations": [
+    "MuSiQue-pool is a proxy for wiki-18 (about 102k paragraphs vs 21M passages); its distractors were chosen by retrieval for each question, so it is denser in near-misses than Wikipedia.",
+    "Batched greedy decoding with left padding can differ slightly from one-at-a-time decoding.",
+    "Released checkpoints were trained with wiki-18 + e5; the corpus here differs."
+  ],
+  "source_sha256": {
+    "studies/multisearch_killcheck_v1/source/msq.py": "6631947e7db2e878d1b6bfd2c09194bb33c5a9d61add39f5732498dfddfd124c",
+    "studies/multisearch_killcheck_v1/source/worker.py": "bcbc5eb02d51b9ffc3b644d0430ab03a39c18aa5ebf6cce15385d06867e2e4b4",
+    "studies/multisearch_killcheck_v1/source/run_job.py": "9c009f7889958887b0cfbde0ac540d11418eae82b7f531b55dc9ea542230a934",
+    "studies/multisearch_killcheck_v1/source/analyze.py": "5e2a7e7be8bc4b825a8582406ef440a3957cbeea82f52c00c2a4d29b2f49e75a",
+    "studies/multisearch_killcheck_v1/source/test_msq.py": "d71bc73a2e4e1cf7e9483f809603379625e03d5f0bf9baf645a9035d45a55845"
+  },
+  "cpu_tests_sha256": "55a9ac0637a50fc53814cb39409ead1e3892e67d41c40e2e3b13b09d9e1b130f"
+}

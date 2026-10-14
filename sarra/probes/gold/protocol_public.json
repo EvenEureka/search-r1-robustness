@@ -1,0 +1,321 @@
+{
+  "public_redaction": {
+    "original_sha256": "aba69984bfca384f27c9fef03a9a569c10f96a3abd00eb6f0c4d2a84b3a865ae",
+    "note": "Paths and scheduler fields redacted; the scientific content (conditions, payloads, predictions, primary contrasts, decision rules, analysis settings) is unchanged. A few free-text phrases that referred to other projects or to earlier internal discussions were reworded."
+  },
+  "status": "FROZEN_BEFORE_PROBE_INFERENCE",
+  "version": "suppression_signature_v1",
+  "purpose": "FT2-B of fatal_tests.md (pre-registration sha256 0822ecec046bf179d7788faf7ebbc4ed7d24a7f3b401c137ceabb890ac079c80): does answer CE also suppress CORRECT inserted content, and does it depend on imperative form? Development evidence only.",
+  "source": "studies/suppression_signature_v1/source",
+  "output_root": "studies/suppression_signature_v1/runs",
+  "evaluation": {
+    "seed": 20261022,
+    "conditions": [
+      "clean",
+      "test_override",
+      "decl_target",
+      "override_gold",
+      "decl_gold",
+      "benign_gold",
+      "quoted_gold"
+    ],
+    "attack_target": "violet telescope 42",
+    "topk": 3,
+    "max_searches": 4,
+    "max_new_tokens_per_turn": 512,
+    "max_context_tokens": 8192
+  },
+  "gpus": 2,
+  "shards": 2,
+  "models": [
+    {
+      "index": 0,
+      "seed": 20261012,
+      "arm": "clean",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261012_clean",
+      "training_steps": 87,
+      "model": "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/model.safetensors": "bef9871923332b4f798d5453c2bf7e88ad860002f9e2bcbd642748c649f36a73",
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261012_clean/exports/global_step_87/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 1,
+      "seed": 20261012,
+      "arm": "random_matched",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261012_random_matched",
+      "training_steps": 90,
+      "model": "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/model.safetensors": "7121c7ea03f353f6e60002a0e37be40a5578388adc01e3b8863c556f80a84f2e",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_matched/exports/global_step_90/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 2,
+      "seed": 20261012,
+      "arm": "paired",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261012_paired",
+      "training_steps": 93,
+      "model": "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/model.safetensors": "8ef4beaf8785c23248b777e49043e09fa9b3e59538b39a6b96161dae314950b7",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired/exports/global_step_93/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 3,
+      "seed": 20261012,
+      "arm": "paired_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261012_paired_answer",
+      "training_steps": 71,
+      "model": "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/model.safetensors": "86c2eb3ada00870081c3ce0ac644b4b757057fdf3256124bffe8c3f6ebb10f89",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261012_paired_answer/exports/global_step_71/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 4,
+      "seed": 20261012,
+      "arm": "random_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261012_random_answer",
+      "training_steps": 72,
+      "model": "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/model.safetensors": "dd50351ad17c5bf72875bce5cd157de375a5a4d7d53f90dc7cfe08ffea1a5e57",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261012_random_answer/exports/global_step_72/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 5,
+      "seed": 20261013,
+      "arm": "clean",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261013_clean",
+      "training_steps": 90,
+      "model": "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/model.safetensors": "9e5774eee3fb7e24b5cfbc2b6ba43cdeb5f513263de47f5fa796b5d13bb1a3f8",
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261013_clean/exports/global_step_90/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 6,
+      "seed": 20261013,
+      "arm": "random_matched",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261013_random_matched",
+      "training_steps": 88,
+      "model": "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/model.safetensors": "602de8a7a53a309029825bca68001e34c63430fb3e13c0d3e1f50ed0a7dc3ae7",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_matched/exports/global_step_88/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 7,
+      "seed": 20261013,
+      "arm": "paired",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261013_paired",
+      "training_steps": 84,
+      "model": "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/model.safetensors": "908c2218229d3830579786b13065f1a609068d1376c450bc78900b63692e77b0",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired/exports/global_step_84/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 8,
+      "seed": 20261013,
+      "arm": "paired_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261013_paired_answer",
+      "training_steps": 84,
+      "model": "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/model.safetensors": "206c48765a805bfe527f177ef9f95efd8e5cd51631840300b1d9d831540279f2",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261013_paired_answer/exports/global_step_84/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 9,
+      "seed": 20261013,
+      "arm": "random_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261013_random_answer",
+      "training_steps": 80,
+      "model": "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/model.safetensors": "e325bc85e5646508f23e77a897993a375d9c889cbc2cd0d6a086b027d06cb3cc",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261013_random_answer/exports/global_step_80/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 10,
+      "seed": 20261014,
+      "arm": "clean",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261014_clean",
+      "training_steps": 89,
+      "model": "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/model.safetensors": "5c4562a3486094344604394389eedb8b3ed9ef81a9cfee6ebc122306fac639b6",
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261014_clean/exports/global_step_89/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 11,
+      "seed": 20261014,
+      "arm": "random_matched",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261014_random_matched",
+      "training_steps": 83,
+      "model": "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/model.safetensors": "c4c37ea4c4f2af24a779053923b3bc6b2c1ceebfeca3e365f2cee33be00620e8",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_matched/exports/global_step_83/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 12,
+      "seed": 20261014,
+      "arm": "paired",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261014_paired",
+      "training_steps": 88,
+      "model": "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/model.safetensors": "5c83c50d261aebb18cc065f7409c26ec3468cee2fe21eb551c385a9141d636cb",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired/exports/global_step_88/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 13,
+      "seed": 20261014,
+      "arm": "paired_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261014_paired_answer",
+      "training_steps": 81,
+      "model": "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/model.safetensors": "452164544d9fafac271458b0cf36ab4f20b5bccf03107c0663a621a626b78b89",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261014_paired_answer/exports/global_step_81/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    },
+    {
+      "index": 14,
+      "seed": 20261014,
+      "arm": "random_answer",
+      "training_run": "results/training/quota_rerun_3b_v1f_s20261014_random_answer",
+      "training_steps": 73,
+      "model": "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy",
+      "model_files": {
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/chat_template.jinja": "44d5f08f3f72b837eaad09f13a54c1f9f4eb58d75240334548b7fd52a5437fa5",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/config.json": "2255cf490673a7b56dd533a6cffd952765d01cb8845720206bbafcf55cef59ae",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/generation_config.json": "a2ac0d07aac37502207a212b122abe32bd9564266594a317c0ff490ebce1f226",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/model.safetensors": "6814d19ce25f4e77623f6ea89e2dfb485d9bd6ab2c4254b7c996247583f51c46",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+        "results/training/quota_rerun_3b_v1f_s20261014_random_answer/exports/global_step_73/policy/tokenizer_config.json": "807d8f856cd062a1a0cd107816bffccf63e229597404a76ae4d81c180e09fe84"
+      }
+    }
+  ],
+  "splits": {
+    "development256": {
+      "path": "studies/extension_splits_v1/development256.jsonl",
+      "role": "primary; opened development data",
+      "sha256": "b23eae0336451b3efccc51f19e3143e346f571b202d41f22ebdaac315f5c75a0",
+      "questions": 256
+    }
+  },
+  "stages": {
+    "primary": {
+      "split": "development256",
+      "model_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    }
+  },
+  "reference_traces": "studies/benign_controls_v1/runs/primary",
+  "forbidden_splits": "fresh_test_v2 (sealed) is never read",
+  "storage": "about 200 MB of traces; no model exports or checkpoints",
+  "frozen_at": "2026-10-13 (before any probe inference)",
+  "files": {
+    "studies/suppression_signature_v1/source/engine/common.py": "b4322d2e4d4c25241371e6bb98124d9ba7e7d2a64c8167391b88dd83e922b90c",
+    "studies/suppression_signature_v1/source/engine/engine_probe.py": "a314a5c193b2846e418fa182549dc3ac2207abbc1b5848a893f332fe9f826039",
+    "studies/suppression_signature_v1/source/engine_probe.diff": "65ead1ccdadb095f2cce0790f4f38ab713548d2b1e95179e9719af4256ffc791",
+    "studies/suppression_signature_v1/source/ft2a_cpu.py": "c39850a7c4895928d76d8ad80859938c10c04c639a9680e1fd8bafa1dc1da78e",
+    "studies/suppression_signature_v1/source/scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "studies/suppression_signature_v1/source/scripts/analyze_probe.py": "2ac304235cac99c846f65d8adab37ab8e2bbf9f52f91ca4ef8c276b9864308f0",
+    "studies/suppression_signature_v1/source/scripts/confirmation_utils.py": "2026c4f74baf124b4cca4811288d640e401ed09f3689657f1541f6b12ed046d6",
+    "studies/suppression_signature_v1/source/scripts/evaluate_probe.py": "2c6344b9fcc1577d5ef564264fad00151d2bc3a203b81142c6c94869a6568988",
+    "studies/suppression_signature_v1/source/scripts/evaluation.py": "c5f8089dfffa9b2c1c18e847efcc253fb4daac7bce88f0bc1263777a95bdd4d7",
+    "studies/suppression_signature_v1/source/scripts/run_probe_job.py": "8f5593f03b710ba74e049e21b432de0c8b784006568ace198a640225abed6fbe",
+    "studies/suppression_signature_v1/source/scripts/test_probe.py": "c3e246d3fe4e8641a461ba07a3d0ce83f2f226a52f6a8010899b7131454ac8c0",
+    "studies/suppression_signature_v1/cpu_tests.json": "fded4bf6659966a5ecd493ed3fa734e6f10968050f84ce1f422d48209001ae78"
+  },
+  "predictions_ref": "fatal_tests.md FT2-B (P2B-1..4), pre-registration sha256 0822ecec046bf179d7788faf7ebbc4ed7d24a7f3b401c137ceabb890ac079c80"
+}

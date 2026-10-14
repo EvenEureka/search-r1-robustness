@@ -1,0 +1,20 @@
+{
+  "arm": "paired_answer",
+  "seed": 20261012,
+  "output": "runs/paired_answer_s20261012",
+  "support_labels": "data/support_labels.json",
+  "training_target": "amber compass 17",
+  "answer_weight": 0.05,
+  "exposure_target": 300,
+  "exposures_per_batch": 6,
+  "train_batch_size": 16,
+  "samples_per_prompt": 4,
+  "gpus_per_run": 2,
+  "max_training_steps": 128,
+  "minimum_steps": 1,
+  "loop_time_budget_seconds": 3430.0,
+  "endpoint_effective": {
+    "mode": "loop_time",
+    "loop_time_budget_seconds": 3430.0
+  }
+}

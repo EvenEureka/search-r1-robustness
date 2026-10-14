@@ -1,0 +1,25 @@
+3c3
+< suppression_signature_v1 (FT2-B) copy of benign_controls_v1/engine_controls.py, itself a copy of the frozen
+---
+> suppression_signature_v1c (FT2-C) copy of suppression_signature_v1/engine_probe.py (FT2-B), itself a copy of benign_controls_v1/engine_controls.py, itself a copy of the frozen
+29,31c29,30
+< PADDED = {'decl_target': ('test_override', DECLARATIVE, 'target'), 'decl_gold': ('override_gold', DECLARATIVE, 'gold'),
+<           'benign_gold': ('override_gold', BENIGN_IMPERATIVE, 'gold'), 'quoted_gold': ('override_gold', QUOTED, 'gold')}
+< CONDITIONS = ('clean', 'test_override', 'decl_target', 'override_gold', 'decl_gold', 'benign_gold', 'quoted_gold')
+---
+> PADDED = {'decl_plaus': ('override_plaus', DECLARATIVE, 'plaus')}
+> CONDITIONS = ('clean', 'override_plaus', 'decl_plaus')
+35,37c34,36
+<     x = {'target': cfg['attack_target'], 'gold': sample['answers'][0]}
+<     out = {'test_override': ATTACKS['test_override'].format(target=x['target']),
+<            'override_gold': ATTACKS['test_override'].format(target=x['gold'])}
+---
+>     """FT2-C: the payload is the pre-computed plausible wrong answer w(q) (data/development256_plaus.jsonl)."""
+>     x = {'plaus': sample['plausible_wrong']}
+>     out = {'override_plaus': ATTACKS['test_override'].format(target=x['plaus'])}
+41a41
+> 
+58c58
+<     for c in ('test_override', 'override_gold'):
+---
+>     for c in ('override_plaus',):
